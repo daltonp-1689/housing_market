@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Housing Market · Learning Dashboard</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0f1117;
+      --surface:   #1a1d27;
+      --surface2:  #22263a;
+      --border:    #2e3250;
+      --accent:    #6c8ef5;
+      --accent2:   #a78bfa;
+      --green:     #34d399;
+      --yellow:    #fbbf24;
+      --red:       #f87171;
+      --muted:     #6b7280;
+      --text:      #e2e8f0;
+      --text-dim:  #94a3b8;
+      --code-bg:   #12151f;
+      --font:      'Inter', system-ui, -apple-system, sans-serif;
+      --mono:      'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+    html { font-size: 15px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Layout ───────────────────────────────────────────────────── */
+    .app-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .app-header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+    .app-header .subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+    /* ── Tab Bar ──────────────────────────────────────────────────── */
+    .tab-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0 24px;
+      gap: 2px;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 12px 16px;
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn:hover:not(.locked) { color: var(--text); }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .tab-btn.locked {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+    .lock-icon { font-size: 0.7rem; }
+
+    /* ── Tab Content ──────────────────────────────────────────────── */
+    .tab-content { display: none; padding: 32px; max-width: 960px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+
+    /* ── Section Headings ─────────────────────────────────────────── */
+    .section-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* ── Cards ────────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .card p {
+      color: var(--text-dim);
+      font-size: 0.875rem;
+      line-height: 1.65;
+    }
+
+    /* ── Progress Bar ─────────────────────────────────────────────── */
+    .progress-wrap { margin: 24px 0; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .progress-label strong { color: var(--text); }
+    .progress-track {
+      background: var(--surface2);
+      border-radius: 999px;
+      height: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.5s ease;
+    }
+
+    /* ── Module Grid on Overview ──────────────────────────────────── */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .module-chip {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 0.8rem;
+    }
+    .module-chip.active-module { border-color: var(--accent); background: #1a2040; }
+    .module-chip.locked-module { opacity: 0.4; }
+    .module-chip .chip-num { font-size: 0.65rem; color: var(--muted); margin-bottom: 4px; }
+    .module-chip .chip-name { font-weight: 600; color: var(--text); }
+    .module-chip .chip-status {
+      font-size: 0.65rem;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── Vision Section ───────────────────────────────────────────── */
+    .vision-card {
+      background: linear-gradient(135deg, #1a2040 0%, #1a1d27 60%);
+      border: 1px solid #2e3a6e;
+      border-radius: 10px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .vision-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .vision-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .vision-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid #2e3a6e;
+      position: relative;
+    }
+    .vision-step:last-child { border-bottom: none; }
+    .vision-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .vision-num.current { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .vision-step-body .vstep-title { font-size: 0.875rem; font-weight: 600; color: var(--text); }
+    .vision-step-body .vstep-desc { font-size: 0.8rem; color: var(--text-dim); margin-top: 2px; }
+
+    /* ── Step Cards (inside module tabs) ─────────────────────────── */
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+    }
+    .step-header:hover { background: var(--surface2); }
+    .step-header-left { display: flex; align-items: center; gap: 12px; }
+    .step-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-family: var(--mono);
+    }
+    .step-title { font-weight: 600; font-size: 0.9rem; }
+    .chevron {
+      font-size: 0.7rem;
+      color: var(--muted);
+      transition: transform 0.2s;
+    }
+    .step-card.open .chevron { transform: rotate(90deg); }
+    .step-body { display: none; padding: 22px; }
+    .step-card.open .step-body { display: block; }
+
+    .step-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 600px) { .step-meta-grid { grid-template-columns: 1fr; } }
+    .meta-block { }
+    .meta-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .meta-value { font-size: 0.85rem; color: var(--text-dim); line-height: 1.55; }
+    .meta-value strong { color: var(--text); font-weight: 600; }
+
+    /* ── File path pill ───────────────────────────────────────────── */
+    .filepath {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--green);
+    }
+
+    /* ── ML Connection banner ─────────────────────────────────────── */
+    .ml-banner {
+      background: #1a2040;
+      border: 1px solid #2e3a6e;
+      border-left: 3px solid var(--accent2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 16px;
+    }
+    .ml-banner .ml-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+    .ml-banner p { font-size: 0.83rem; color: var(--text-dim); line-height: 1.6; }
+
+    /* ── Code Block ───────────────────────────────────────────────── */
+    .code-wrap {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+    .code-wrap-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .code-wrap-header span { font-family: var(--mono); }
+    pre {
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+      overflow-x: auto;
+    }
+    .kw { color: #c792ea; }
+    .str { color: #c3e88d; }
+    .cmt { color: #546e7a; font-style: italic; }
+    .fn { color: #82aaff; }
+    .num { color: #f78c6c; }
+    .tag { color: #f07178; }
+    .attr { color: #ffcb6b; }
+    .val { color: #c3e88d; }
+
+    /* ── Status Badge ─────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .badge-complete { background: #0d2e1f; color: var(--green); border: 1px solid #1a4a33; }
+    .badge-progress { background: #2a1f0a; color: var(--yellow); border: 1px solid #4a3a10; }
+    .badge-pending  { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ── Project Tree ─────────────────────────────────────────────── */
+    .tree {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      font-family: var(--mono);
+      font-size: 0.83rem;
+      line-height: 2;
+    }
+    .tree-line { display: flex; align-items: baseline; gap: 8px; }
+    .tree-connector { color: var(--border); white-space: pre; }
+    .tree-icon { font-size: 0.8rem; }
+    .tree-name { color: var(--text); }
+    .tree-name.dir { color: var(--accent); font-weight: 600; }
+    .tree-name.hidden-file { color: var(--muted); }
+    .tree-desc { color: var(--text-dim); font-family: var(--font); font-size: 0.75rem; margin-left: 8px; }
+
+    /* ── Glossary ─────────────────────────────────────────────────── */
+    .glossary-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .gloss-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 600px) { .gloss-item { grid-template-columns: 1fr; } }
+    .gloss-term {
+      font-family: var(--mono);
+      font-size: 0.83rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .gloss-def { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
+    .gloss-module {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── Divider ──────────────────────────────────────────────────── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    /* ── Current module callout ───────────────────────────────────── */
+    .current-callout {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #1a2040;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+    }
+    .current-callout .pulse {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(108,142,245,0.25);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 3px rgba(108,142,245,0.25); }
+      50%      { box-shadow: 0 0 0 6px rgba(108,142,245,0.1); }
+    }
+    .current-callout-text { font-size: 0.85rem; color: var(--text-dim); }
+    .current-callout-text strong { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────────────── -->
+<header class="app-header">
+  <div class="dot"></div>
+  <div>
+    <h1>Housing Market · Learning Dashboard</h1>
+    <div class="subtitle">El Dorado Hills &amp; Folsom, CA &nbsp;·&nbsp; Data Science Journey</div>
+  </div>
+</header>
+
+<!-- ── Tab Bar ────────────────────────────────────────────────────── -->
+<nav class="tab-bar" id="tabBar">
+  <button class="tab-btn active" data-tab="overview">Overview</button>
+  <button class="tab-btn active-module-tab" data-tab="module1">Module 1 · Setup</button>
+  <button class="tab-btn locked" data-tab="module2" title="Complete Module 1 to unlock"><span class="lock-icon">🔒</span> Module 2 · Data</button>
+  <button class="tab-btn locked" data-tab="module3" title="Locked"><span class="lock-icon">🔒</span> Module 3 · pandas</button>
+  <button class="tab-btn locked" data-tab="module4" title="Locked"><span class="lock-icon">🔒</span> Module 4 · Jupyter</button>
+  <button class="tab-btn locked" data-tab="module5" title="Locked"><span class="lock-icon">🔒</span> Module 5 · EDA</button>
+  <button class="tab-btn locked" data-tab="module6" title="Locked"><span class="lock-icon">🔒</span> Module 6 · Pipeline</button>
+  <button class="tab-btn locked" data-tab="module7" title="Locked"><span class="lock-icon">🔒</span> Module 7 · ML</button>
+  <button class="tab-btn locked" data-tab="module8" title="Locked"><span class="lock-icon">🔒</span> Module 8 · AI</button>
+  <button class="tab-btn" data-tab="tree">Project Tree</button>
+  <button class="tab-btn" data-tab="glossary">Glossary</button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     TAB: OVERVIEW
+═══════════════════════════════════════════════════════════════════ -->
+<section class="tab-content active" id="tab-overview">
+
+  <div class="current-callout">
+    <div class="pulse"></div>
+    <div class="current-callout-text">
+      <strong>Currently active:</strong> Module 1 — GitHub &amp; Project Setup &nbsp;·&nbsp; Step 2 — Building the Learning Dashboard
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Project</div>
+    <p>
+      A structured data science project analyzing the housing markets of
+      <strong style="color:var(--text)">El Dorado Hills and Folsom, CA</strong>.
+      The goal is to go one small step at a time — understanding every layer
+      before moving to the next — and ultimately build machine learning models
+      that predict home prices, apply real data science techniques, and
+      integrate AI tools to generate market summaries.
+    </p>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Overall Progress</span>
+      <strong>Module 1 of 8 &nbsp;·&nbsp; ~2% complete</strong>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" style="width: 2%"></div>
+    </div>
+  </div>
+
+  <!-- Module status grid -->
+  <p class="section-title">All 8 Modules</p>
+  <div class="module-grid">
+    <div class="module-chip active-module">
+      <div class="chip-num">Module 1</div>
+      <div class="chip-name">GitHub &amp; Setup</div>
+      <div class="chip-status"><span style="color:var(--yellow)">▶</span> <span style="color:var(--yellow)">In Progress</span></div>
+    </div>
+    <div class="module-chip locked-module">
+      <div class="chip-num">Module 2</div>
+      <div class="chip-name">Getting the Data</div>
+      <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
+    </div>
+    <div class="module-chip locked-module">
+      <div class="chip-num">Module 3</div>
+      <div class="chip-name">pandas Fundamentals</div>
+      <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
+    </div>
+    <div class="module-chip locked-module">
+      <div class="chip-num">Module 4</div>
+      <div class="chip-name">Jupyter Notebooks</div>
+      <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
+    </div>
+    <div class="module-chip locked-module">
+      <div class="chip-num">Module 5</div>
+      <div class="chip-name">Exploratory Analysis</div>
+      <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
+    </div>
+    <div class="module-chip locked-module">
+      <div class="chip-num">Module 6</div>
+      <div class="chip-name">Data Pipeline</div>
+      <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
+    </div>
+    <div class="module-chip locked-module">
+      <div class="chip-num">Module 7</div>
+      <div class="chip-name">Machine Learning</div>
+      <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
+    </div>
+    <div class="module-chip locked-module">
+      <div class="chip-num">Module 8</div>
+      <div class="chip-name">AI Integration</div>
+      <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- Vision section -->
+  <div class="vision-card">
+    <h3>Where This Is All Going</h3>
+    <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:20px;line-height:1.65;">
+      Every small step you take feeds into a larger arc. Here is the full
+      journey — keep this in view even on the earliest steps. You are not
+      just learning individual tools; you are building a complete data
+      science system from scratch.
+    </p>
+    <div class="vision-steps">
+      <div class="vision-step">
+        <div class="vision-num current">1</div>
+        <div class="vision-step-body">
+          <div class="vstep-title">Foundation — Version Control &amp; Project Structure</div>
+          <div class="vstep-desc">Git, GitHub, and a clean project layout. Every professional data science project starts here. Without version control, you cannot collaborate, roll back mistakes, or share reproducible work.</div>
+        </div>
+      </div>
+      <div class="vision-step">
+        <div class="vision-num">2</div>
+        <div class="vision-step-body">
+          <div class="vstep-title">Data Acquisition — Getting Real Housing Data</div>
+          <div class="vstep-desc">Sourcing, downloading, and storing raw data about El Dorado Hills and Folsom home sales. ML models are only as good as the data behind them — understanding where your data comes from is non-negotiable.</div>
+        </div>
+      </div>
+      <div class="vision-step">
+        <div class="vision-num">3–4</div>
+        <div class="vision-step-body">
+          <div class="vstep-title">pandas &amp; Jupyter — The Core Data Science Toolkit</div>
+          <div class="vstep-desc">pandas is the library that lets you manipulate tabular data in Python. Jupyter notebooks are the interactive environment where data scientists explore, visualize, and document their thinking. These two tools are used in virtually every real-world data science project.</div>
+        </div>
+      </div>
+      <div class="vision-step">
+        <div class="vision-num">5</div>
+        <div class="vision-step-body">
+          <div class="vstep-title">EDA — Exploratory Data Analysis</div>
+          <div class="vstep-desc">Before building any model, you need to understand your data deeply — distributions, outliers, correlations, missing values. EDA is how you ask questions of your data before the data asks questions of you.</div>
+        </div>
+      </div>
+      <div class="vision-step">
+        <div class="vision-num">6</div>
+        <div class="vision-step-body">
+          <div class="vstep-title">Data Pipeline — Automating the Flow from Raw to Ready</div>
+          <div class="vstep-desc">A pipeline takes raw data and transforms it into clean, feature-rich data ready for a model. This is where data cleaning, feature engineering, and preprocessing live. Building a reusable pipeline means you can re-run the whole process with one command.</div>
+        </div>
+      </div>
+      <div class="vision-step">
+        <div class="vision-num">7</div>
+        <div class="vision-step-body">
+          <div class="vstep-title">Machine Learning — Predicting Home Prices</div>
+          <div class="vstep-desc">Train models that learn patterns in historical sales data and predict future prices. You will explore regression algorithms, evaluate model accuracy, tune parameters, and understand what features drive value in El Dorado Hills and Folsom specifically.</div>
+        </div>
+      </div>
+      <div class="vision-step">
+        <div class="vision-num">8</div>
+        <div class="vision-step-body">
+          <div class="vstep-title">AI Integration — Claude-Powered Market Summaries</div>
+          <div class="vstep-desc">Use the Claude API to automatically generate plain-English market summaries from your model's predictions and data insights. This is where your data pipeline and ML output become something a real person can read, act on, and share.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     TAB: MODULE 1
+═══════════════════════════════════════════════════════════════════ -->
+<section class="tab-content" id="tab-module1">
+
+  <div style="margin-bottom:28px;">
+    <p class="section-title">Module 1 — GitHub &amp; Project Setup</p>
+    <p style="font-size:0.875rem;color:var(--text-dim);line-height:1.65;">
+      Before any data science can happen, you need a place to put your work
+      and a system to track changes. This module establishes the professional
+      foundation that every real project is built on.
+    </p>
+  </div>
+
+  <!-- ── Step 1 ─────────────────────────────────────────────────── -->
+  <div class="step-card open" id="step-1-1">
+    <div class="step-header" onclick="toggleStep(this)">
+      <div class="step-header-left">
+        <span class="step-num">Step 1</span>
+        <span class="step-title">Create the Repository &amp; .gitignore</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge badge-complete"><span class="badge-dot"></span> Complete</span>
+        <span class="chevron">▶</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-meta-grid">
+        <div class="meta-block">
+          <div class="meta-label">What Was Built</div>
+          <div class="meta-value">
+            A Git repository was initialized for the project and pushed to GitHub.
+            A <strong>.gitignore</strong> file was added to tell Git which files
+            to never track — things like temporary Python files, local environment
+            settings, and the <code style="font-family:var(--mono);font-size:0.8em;color:var(--accent)">data/</code> folder
+            (since raw data files are often too large for GitHub).
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Why It Matters</div>
+          <div class="meta-value">
+            Every change you make from now on is tracked. You can always go back
+            in time, compare versions, and share your work with others. This is
+            the same workflow used by professional data scientists and engineers
+            at every company.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">What I Learned</div>
+          <div class="meta-value">
+            <strong>Git</strong> is a version control system — a tool that takes
+            snapshots of your project over time. <strong>GitHub</strong> is a
+            website that stores those snapshots in the cloud. A
+            <strong>.gitignore</strong> is a list of patterns telling Git
+            "ignore these files entirely."
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Files Created</div>
+          <div class="meta-value" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+            <span class="filepath">📁 housing_market/</span>
+            <span class="filepath">📄 .gitignore</span>
+            <span class="filepath">📄 README.md</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;">Key Commands Used</div>
+      <div class="code-wrap">
+        <div class="code-wrap-header"><span>bash</span> <span>Terminal</span></div>
+        <pre><span class="cmt"># Initialize a new Git repository</span>
+<span class="fn">git</span> init
+
+<span class="cmt"># Stage all files for the first commit</span>
+<span class="fn">git</span> add .
+
+<span class="cmt"># Save a snapshot with a descriptive message</span>
+<span class="fn">git</span> commit -m <span class="str">"Initial commit"</span>
+
+<span class="cmt"># Connect to GitHub and push</span>
+<span class="fn">git</span> remote add origin &lt;your-repo-url&gt;
+<span class="fn">git</span> push -u origin main</pre>
+      </div>
+
+      <div class="ml-banner">
+        <div class="ml-label">How This Connects to Machine Learning</div>
+        <p>
+          Every ML project lives inside a Git repository. When you eventually
+          train models, you will version not just your code but also your
+          model configurations, training scripts, and results. The habits you
+          build now — committing often, writing clear messages — are the same
+          ones that prevent "which version of the model was this?" disasters
+          later. The <code style="font-family:var(--mono);font-size:0.9em">.gitignore</code>
+          pattern for <code style="font-family:var(--mono);font-size:0.9em">data/</code>
+          is standard in ML: large datasets go in separate storage (S3, a
+          database, a data lake), not inside the repo.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 2 ─────────────────────────────────────────────────── -->
+  <div class="step-card open" id="step-1-2">
+    <div class="step-header" onclick="toggleStep(this)">
+      <div class="step-header-left">
+        <span class="step-num">Step 2</span>
+        <span class="step-title">Build the Learning Dashboard</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge badge-complete"><span class="badge-dot"></span> Complete</span>
+        <span class="chevron">▶</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-meta-grid">
+        <div class="meta-block">
+          <div class="meta-label">What Was Built</div>
+          <div class="meta-value">
+            A single <strong>dashboard.html</strong> file in the project root.
+            It opens in any browser with no setup required. It has tabbed
+            navigation, a progress bar, an 8-module roadmap with locked/unlocked
+            tabs, a project tree, and a glossary. This file will grow with
+            every step of the journey — it is never rebuilt from scratch.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Why It Matters</div>
+          <div class="meta-value">
+            Good data scientists document as they go. Having a living record
+            of every decision, every concept learned, and every file created
+            means you can always explain your work to others — and to
+            future-you. The dashboard is your project's memory.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">What I Learned</div>
+          <div class="meta-value">
+            A single <strong>HTML file</strong> is just a text file with
+            structure, style, and behavior baked in. The browser reads it and
+            renders the result. No server, no framework needed — this is
+            intentionally simple so the dashboard is always accessible,
+            regardless of what software you have installed.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">File Created</div>
+          <div class="meta-value" style="margin-top:4px;">
+            <span class="filepath">📄 dashboard.html</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;">Structure of this file</div>
+      <div class="code-wrap">
+        <div class="code-wrap-header"><span>html</span> <span>dashboard.html (simplified)</span></div>
+        <pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="cmt">&lt;!-- Styles: dark theme, typography, cards --&gt;</span>
+    <span class="tag">&lt;style&gt;</span> ... <span class="tag">&lt;/style&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="cmt">&lt;!-- Header, tab navigation --&gt;</span>
+    <span class="cmt">&lt;!-- Overview tab: progress, vision --&gt;</span>
+    <span class="cmt">&lt;!-- Module tabs: step cards --&gt;</span>
+    <span class="cmt">&lt;!-- Project Tree tab --&gt;</span>
+    <span class="cmt">&lt;!-- Glossary tab --&gt;</span>
+    <span class="cmt">&lt;!-- JavaScript: tab switching, collapsibles --&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+      </div>
+
+      <div class="ml-banner">
+        <div class="ml-label">How This Connects to Machine Learning</div>
+        <p>
+          In real ML projects, documentation is not optional — it is what
+          separates a research experiment from a deployable system. Tools like
+          MLflow and Weights &amp; Biases are essentially dashboards that track
+          every training run, every metric, and every model version. You are
+          building the same habit now with a simple HTML file. The instinct to
+          document <em>as you go</em> — not after the fact — is one of the most
+          valuable practices a data scientist can have.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     LOCKED MODULE TABS (2–8) — placeholder content
+═══════════════════════════════════════════════════════════════════ -->
+<section class="tab-content" id="tab-module2">
+  <div style="text-align:center;padding:80px 0;color:var(--muted);">
+    <div style="font-size:2.5rem;margin-bottom:16px;">🔒</div>
+    <div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 2 is locked</div>
+    <div style="font-size:0.85rem;">Complete Module 1 to unlock Getting the Data.</div>
+  </div>
+</section>
+<section class="tab-content" id="tab-module3">
+  <div style="text-align:center;padding:80px 0;color:var(--muted);">
+    <div style="font-size:2.5rem;margin-bottom:16px;">🔒</div>
+    <div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 3 is locked</div>
+    <div style="font-size:0.85rem;">Complete Module 2 to unlock pandas Fundamentals.</div>
+  </div>
+</section>
+<section class="tab-content" id="tab-module4">
+  <div style="text-align:center;padding:80px 0;color:var(--muted);"><div style="font-size:2.5rem;margin-bottom:16px;">🔒</div><div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 4 is locked</div></div>
+</section>
+<section class="tab-content" id="tab-module5">
+  <div style="text-align:center;padding:80px 0;color:var(--muted);"><div style="font-size:2.5rem;margin-bottom:16px;">🔒</div><div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 5 is locked</div></div>
+</section>
+<section class="tab-content" id="tab-module6">
+  <div style="text-align:center;padding:80px 0;color:var(--muted);"><div style="font-size:2.5rem;margin-bottom:16px;">🔒</div><div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 6 is locked</div></div>
+</section>
+<section class="tab-content" id="tab-module7">
+  <div style="text-align:center;padding:80px 0;color:var(--muted);"><div style="font-size:2.5rem;margin-bottom:16px;">🔒</div><div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 7 is locked</div></div>
+</section>
+<section class="tab-content" id="tab-module8">
+  <div style="text-align:center;padding:80px 0;color:var(--muted);"><div style="font-size:2.5rem;margin-bottom:16px;">🔒</div><div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 8 is locked</div></div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     TAB: PROJECT TREE
+═══════════════════════════════════════════════════════════════════ -->
+<section class="tab-content" id="tab-tree">
+  <p class="section-title">Project Tree — Current State</p>
+  <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:20px;">
+    This tree updates after every step. Each file shows what it is and why it exists.
+  </p>
+  <div class="tree">
+    <div class="tree-line">
+      <span class="tree-connector">  </span>
+      <span class="tree-icon">📁</span>
+      <span class="tree-name dir">housing_market/</span>
+      <span class="tree-desc">— project root</span>
+    </div>
+    <div class="tree-line">
+      <span class="tree-connector">  ├── </span>
+      <span class="tree-icon">📄</span>
+      <span class="tree-name hidden-file">.gitignore</span>
+      <span class="tree-desc">— tells Git which files to never track</span>
+    </div>
+    <div class="tree-line">
+      <span class="tree-connector">  ├── </span>
+      <span class="tree-icon">📄</span>
+      <span class="tree-name">README.md</span>
+      <span class="tree-desc">— project description shown on GitHub</span>
+    </div>
+    <div class="tree-line">
+      <span class="tree-connector">  └── </span>
+      <span class="tree-icon">📄</span>
+      <span class="tree-name" style="color:var(--yellow)">dashboard.html</span>
+      <span class="tree-desc">— this learning dashboard (Module 1, Step 2) ← new</span>
+    </div>
+  </div>
+
+  <div style="margin-top:20px;">
+    <div class="card">
+      <div class="card-title" style="font-size:0.85rem;">What the folders will look like later</div>
+      <p style="font-size:0.82rem;">
+        As we progress through the modules, this tree will grow. You will eventually
+        see folders like <code style="font-family:var(--mono);font-size:0.9em;color:var(--accent)">data/</code> (raw housing data),
+        <code style="font-family:var(--mono);font-size:0.9em;color:var(--accent)">notebooks/</code> (Jupyter analysis files),
+        <code style="font-family:var(--mono);font-size:0.9em;color:var(--accent)">src/</code> (Python scripts and pipeline code), and
+        <code style="font-family:var(--mono);font-size:0.9em;color:var(--accent)">models/</code> (trained ML model files).
+        A well-organized folder structure is itself a form of documentation.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     TAB: GLOSSARY
+═══════════════════════════════════════════════════════════════════ -->
+<section class="tab-content" id="tab-glossary">
+  <p class="section-title">Glossary — All Terms Introduced So Far</p>
+  <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:24px;">
+    Every technical term introduced in this project is defined here in plain English.
+    New terms are added automatically after each step.
+  </p>
+  <div class="glossary-grid">
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">Git</div>
+        <div class="gloss-module">Module 1 · Step 1</div>
+      </div>
+      <div class="gloss-def">
+        A version control system — a tool that saves snapshots of your project
+        over time. Every time you make a <em>commit</em>, Git records exactly
+        what changed and when. This means you can always go back to any previous
+        state and see the full history of your work.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">repository</div>
+        <div class="gloss-module">Module 1 · Step 1</div>
+      </div>
+      <div class="gloss-def">
+        A project folder that Git is tracking. Often called a "repo" for short.
+        It contains all your project files plus a hidden <code style="font-family:var(--mono);font-size:0.9em">.git/</code>
+        folder where Git stores its history. Think of it as a project folder with
+        a built-in time machine.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">commit</div>
+        <div class="gloss-module">Module 1 · Step 1</div>
+      </div>
+      <div class="gloss-def">
+        A saved snapshot of your project at a specific point in time. Each commit
+        has a unique ID and a message describing what changed. Commits are the
+        individual entries in your project's history. A good rule: commit small
+        and often, with clear messages.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">push</div>
+        <div class="gloss-module">Module 1 · Step 1</div>
+      </div>
+      <div class="gloss-def">
+        The act of uploading your local commits to a remote repository (like
+        GitHub). After you commit, Git knows about the change — but only on your
+        machine. A push sends those commits to the cloud so they are backed up
+        and visible to others.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">pull</div>
+        <div class="gloss-module">Module 1 · Step 1</div>
+      </div>
+      <div class="gloss-def">
+        The opposite of push — downloading commits from a remote repository to
+        your local machine. If someone else pushes new changes to GitHub (or if
+        you pushed from a different computer), you run <code style="font-family:var(--mono);font-size:0.9em">git pull</code>
+        to bring your local copy up to date.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">clone</div>
+        <div class="gloss-module">Module 1 · Step 1</div>
+      </div>
+      <div class="gloss-def">
+        Copying a remote repository (from GitHub) onto your local machine for
+        the first time. Unlike pull (which updates an existing local repo),
+        clone creates a brand-new local copy including the full commit history.
+        The command is <code style="font-family:var(--mono);font-size:0.9em">git clone &lt;url&gt;</code>.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">.gitignore</div>
+        <div class="gloss-module">Module 1 · Step 1</div>
+      </div>
+      <div class="gloss-def">
+        A plain text file in your repository that lists files and folders Git
+        should completely ignore. Common entries include <code style="font-family:var(--mono);font-size:0.9em">__pycache__/</code>
+        (compiled Python), <code style="font-family:var(--mono);font-size:0.9em">.env</code> (secret API keys),
+        and <code style="font-family:var(--mono);font-size:0.9em">data/</code> (large raw data files).
+        If a file is in .gitignore, it will never show up in <code style="font-family:var(--mono);font-size:0.9em">git status</code>
+        and will never be committed.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">HTML</div>
+        <div class="gloss-module">Module 1 · Step 2</div>
+      </div>
+      <div class="gloss-def">
+        HyperText Markup Language — the standard language for structuring content
+        on the web. An HTML file is just a text file that browsers know how to
+        read and render as a visual page. No server or special software is needed
+        to open a local HTML file — any browser will do.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">version control</div>
+        <div class="gloss-module">Module 1 · Step 1</div>
+      </div>
+      <div class="gloss-def">
+        A system for tracking changes to files over time. Git is the most popular
+        version control system. With version control, you can see what changed,
+        who changed it, when, and why. It is the difference between saving
+        <em>document_final_v3_REALLYFINAL.docx</em> and having a proper history.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">GitHub</div>
+        <div class="gloss-module">Module 1 · Step 1</div>
+      </div>
+      <div class="gloss-def">
+        A website (and cloud service) that hosts Git repositories. GitHub stores
+        your project's full history in the cloud, makes it easy to share code
+        with others, and provides tools for collaboration like pull requests and
+        issues. Git is the tool; GitHub is the hosting platform. They are
+        related but not the same thing.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ── JavaScript ───────────────────────────────────────────────────── -->
+<script>
+  // Tab switching
+  const tabBtns = document.querySelectorAll('.tab-btn:not(.locked)');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      const content = document.getElementById('tab-' + target);
+      if (content) content.classList.add('active');
+    });
+  });
+
+  // Locked tab feedback
+  document.querySelectorAll('.tab-btn.locked').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.style.transition = 'opacity 0.1s';
+      btn.style.opacity = '0.7';
+      setTimeout(() => { btn.style.opacity = ''; }, 300);
+    });
+  });
+
+  // Step card collapsing
+  function toggleStep(header) {
+    const card = header.closest('.step-card');
+    card.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
