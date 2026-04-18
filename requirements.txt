@@ -1,0 +1,19 @@
+# Data
+pandas
+numpy
+
+# Visualization
+matplotlib
+seaborn
+
+# Machine Learning
+scikit-learn
+
+# Notebooks
+jupyter
+
+# AI / Agents
+anthropic
+
+# Scheduling
+APScheduler
