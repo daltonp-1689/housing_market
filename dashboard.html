@@ -8,25 +8,27 @@
     /* ── Reset & Base ─────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg:        #0f1117;
-      --surface:   #1a1d27;
-      --surface2:  #22263a;
-      --border:    #2e3250;
-      --accent:    #6c8ef5;
-      --accent2:   #a78bfa;
-      --green:     #34d399;
-      --yellow:    #fbbf24;
-      --red:       #f87171;
-      --muted:     #6b7280;
-      --text:      #e2e8f0;
-      --text-dim:  #94a3b8;
-      --code-bg:   #12151f;
+      --bg:        #faf8f5;
+      --surface:   #ffffff;
+      --surface2:  #f2ede5;
+      --border:    #e2dbd2;
+      --accent:    #4a6fa5;
+      --accent2:   #7c5cbf;
+      --green:     #1a9e6b;
+      --yellow:    #c07c00;
+      --red:       #dc2626;
+      --muted:     #9ca3af;
+      --text:      #1c1c2e;
+      --text-dim:  #4b5563;
+      --code-bg:   #f2ede5;
       --font:      'Inter', system-ui, -apple-system, sans-serif;
       --mono:      'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
     }
     html { font-size: 15px; }
     body {
-      background: var(--bg);
+      background-color: var(--bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cpolygon points='60,16 97,46 23,46' fill='none' stroke='%23c8b090' stroke-width='1.5' opacity='0.09'/%3E%3Crect x='28' y='46' width='64' height='40' fill='none' stroke='%23c8b090' stroke-width='1.5' opacity='0.09'/%3E%3Crect x='47' y='62' width='26' height='24' fill='none' stroke='%23c8b090' stroke-width='1.5' opacity='0.09'/%3E%3C/svg%3E");
+      background-size: 120px 120px;
       color: var(--text);
       font-family: var(--font);
       line-height: 1.6;
@@ -167,7 +169,7 @@
       padding: 14px 16px;
       font-size: 0.8rem;
     }
-    .module-chip.active-module { border-color: var(--accent); background: #1a2040; }
+    .module-chip.active-module { border-color: var(--accent); background: #eef3fb; }
     .module-chip.locked-module { opacity: 0.4; }
     .module-chip .chip-num { font-size: 0.65rem; color: var(--muted); margin-bottom: 4px; }
     .module-chip .chip-name { font-weight: 600; color: var(--text); }
@@ -179,10 +181,41 @@
       gap: 4px;
     }
 
+    /* ── Skill Tags (on vision steps) ────────────────────────────── */
+    .vstep-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+      align-items: center;
+    }
+    .vstep-skills-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-right: 2px;
+    }
+    .skill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(74,111,165,0.08);
+      border: 1px solid rgba(74,111,165,0.22);
+      border-radius: 5px;
+      padding: 2px 9px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
     /* ── Vision Section ───────────────────────────────────────────── */
     .vision-card {
-      background: linear-gradient(135deg, #1a2040 0%, #1a1d27 60%);
-      border: 1px solid #2e3a6e;
+      background: linear-gradient(135deg, #eef3fb 0%, #f8f5f0 60%);
+      border: 1px solid #c5d0e8;
       border-radius: 10px;
       padding: 28px;
       margin-bottom: 20px;
@@ -203,7 +236,7 @@
       gap: 16px;
       align-items: flex-start;
       padding: 12px 0;
-      border-bottom: 1px solid #2e3a6e;
+      border-bottom: 1px solid #c5d0e8;
       position: relative;
     }
     .vision-step:last-child { border-bottom: none; }
@@ -300,8 +333,8 @@
 
     /* ── ML Connection banner ─────────────────────────────────────── */
     .ml-banner {
-      background: #1a2040;
-      border: 1px solid #2e3a6e;
+      background: #f0edf8;
+      border: 1px solid #c5d0e8;
       border-left: 3px solid var(--accent2);
       border-radius: 8px;
       padding: 14px 16px;
@@ -343,14 +376,14 @@
       color: var(--text-dim);
       overflow-x: auto;
     }
-    .kw { color: #c792ea; }
-    .str { color: #c3e88d; }
-    .cmt { color: #546e7a; font-style: italic; }
-    .fn { color: #82aaff; }
-    .num { color: #f78c6c; }
-    .tag { color: #f07178; }
-    .attr { color: #ffcb6b; }
-    .val { color: #c3e88d; }
+    .kw { color: #7c3aed; }
+    .str { color: #2d8a4a; }
+    .cmt { color: #607d8b; font-style: italic; }
+    .fn { color: #2563eb; }
+    .num { color: #c05e2e; }
+    .tag { color: #dc2626; }
+    .attr { color: #c47a00; }
+    .val { color: #2d8a4a; }
 
     /* ── Status Badge ─────────────────────────────────────────────── */
     .badge {
@@ -363,8 +396,8 @@
       font-weight: 600;
       letter-spacing: 0.04em;
     }
-    .badge-complete { background: #0d2e1f; color: var(--green); border: 1px solid #1a4a33; }
-    .badge-progress { background: #2a1f0a; color: var(--yellow); border: 1px solid #4a3a10; }
+    .badge-complete { background: #d4f5e5; color: var(--green); border: 1px solid #7dd9b0; }
+    .badge-progress { background: #fef3d6; color: var(--yellow); border: 1px solid #e8c060; }
     .badge-pending  { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
     .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
@@ -379,7 +412,7 @@
       line-height: 2;
     }
     .tree-line { display: flex; align-items: baseline; gap: 8px; }
-    .tree-connector { color: var(--border); white-space: pre; }
+    .tree-connector { color: var(--muted); white-space: pre; }
     .tree-icon { font-size: 0.8rem; }
     .tree-name { color: var(--text); }
     .tree-name.dir { color: var(--accent); font-weight: 600; }
@@ -427,7 +460,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      background: #1a2040;
+      background: #eef3fb;
       border: 1px solid var(--accent);
       border-radius: 8px;
       padding: 14px 18px;
@@ -442,8 +475,8 @@
       animation: pulse 2s infinite;
     }
     @keyframes pulse {
-      0%,100% { box-shadow: 0 0 0 3px rgba(108,142,245,0.25); }
-      50%      { box-shadow: 0 0 0 6px rgba(108,142,245,0.1); }
+      0%,100% { box-shadow: 0 0 0 3px rgba(74,111,165,0.25); }
+      50%      { box-shadow: 0 0 0 6px rgba(74,111,165,0.1); }
     }
     .current-callout-text { font-size: 0.85rem; color: var(--text-dim); }
     .current-callout-text strong { color: var(--text); }
@@ -464,13 +497,14 @@
 <nav class="tab-bar" id="tabBar">
   <button class="tab-btn active" data-tab="overview">Overview</button>
   <button class="tab-btn active-module-tab" data-tab="module1">Module 1 · Setup</button>
-  <button class="tab-btn locked" data-tab="module2" title="Complete Module 1 to unlock"><span class="lock-icon">🔒</span> Module 2 · Data</button>
+  <button class="tab-btn" data-tab="module2">Module 2 · Data &amp; Agent</button>
   <button class="tab-btn locked" data-tab="module3" title="Locked"><span class="lock-icon">🔒</span> Module 3 · pandas</button>
   <button class="tab-btn locked" data-tab="module4" title="Locked"><span class="lock-icon">🔒</span> Module 4 · Jupyter</button>
   <button class="tab-btn locked" data-tab="module5" title="Locked"><span class="lock-icon">🔒</span> Module 5 · EDA</button>
   <button class="tab-btn locked" data-tab="module6" title="Locked"><span class="lock-icon">🔒</span> Module 6 · Pipeline</button>
   <button class="tab-btn locked" data-tab="module7" title="Locked"><span class="lock-icon">🔒</span> Module 7 · ML</button>
   <button class="tab-btn locked" data-tab="module8" title="Locked"><span class="lock-icon">🔒</span> Module 8 · AI</button>
+  <button class="tab-btn locked" data-tab="module9" title="Locked"><span class="lock-icon">🔒</span> Module 9 · Agents</button>
   <button class="tab-btn" data-tab="tree">Project Tree</button>
   <button class="tab-btn" data-tab="glossary">Glossary</button>
 </nav>
@@ -483,7 +517,7 @@
   <div class="current-callout">
     <div class="pulse"></div>
     <div class="current-callout-text">
-      <strong>Currently active:</strong> Module 1 — GitHub &amp; Project Setup &nbsp;·&nbsp; Step 2 — Building the Learning Dashboard
+      <strong>Currently active:</strong> Module 2 — Data &amp; First Agent &nbsp;·&nbsp; Step 1 — Finding &amp; Fetching Housing Data
     </div>
   </div>
 
@@ -494,8 +528,10 @@
       <strong style="color:var(--text)">El Dorado Hills and Folsom, CA</strong>.
       The goal is to go one small step at a time — understanding every layer
       before moving to the next — and ultimately build machine learning models
-      that predict home prices, apply real data science techniques, and
-      integrate AI tools to generate market summaries.
+      that predict home prices, apply real data science techniques, integrate
+      AI tools to generate market summaries, and build a multi-agent system
+      that fetches data, runs analysis, and produces reports automatically on
+      a schedule.
     </p>
   </div>
 
@@ -503,25 +539,25 @@
   <div class="progress-wrap">
     <div class="progress-label">
       <span>Overall Progress</span>
-      <strong>Module 1 of 8 &nbsp;·&nbsp; ~2% complete</strong>
+      <strong>Module 2 of 9 &nbsp;·&nbsp; ~11% complete</strong>
     </div>
     <div class="progress-track">
-      <div class="progress-fill" style="width: 2%"></div>
+      <div class="progress-fill" style="width: 11%"></div>
     </div>
   </div>
 
   <!-- Module status grid -->
-  <p class="section-title">All 8 Modules</p>
+  <p class="section-title">All 9 Modules</p>
   <div class="module-grid">
-    <div class="module-chip active-module">
+    <div class="module-chip">
       <div class="chip-num">Module 1</div>
       <div class="chip-name">GitHub &amp; Setup</div>
-      <div class="chip-status"><span style="color:var(--yellow)">▶</span> <span style="color:var(--yellow)">In Progress</span></div>
+      <div class="chip-status"><span style="color:var(--green)">✓</span> <span style="color:var(--green)">Complete</span></div>
     </div>
-    <div class="module-chip locked-module">
+    <div class="module-chip active-module">
       <div class="chip-num">Module 2</div>
-      <div class="chip-name">Getting the Data</div>
-      <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
+      <div class="chip-name">Data &amp; First Agent</div>
+      <div class="chip-status"><span style="color:var(--yellow)">▶</span> <span style="color:var(--yellow)">In Progress</span></div>
     </div>
     <div class="module-chip locked-module">
       <div class="chip-num">Module 3</div>
@@ -553,6 +589,74 @@
       <div class="chip-name">AI Integration</div>
       <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
     </div>
+    <div class="module-chip locked-module">
+      <div class="chip-num">Module 9</div>
+      <div class="chip-name">Agentic Systems</div>
+      <div class="chip-status"><span class="lock-icon">🔒</span> <span>Locked</span></div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- Skills reference -->
+  <p class="section-title">Claude Code Skills Used in This Project</p>
+  <div class="card" style="margin-bottom:8px;">
+    <p style="font-size:0.83rem;color:var(--text-dim);margin-bottom:16px;line-height:1.65;">
+      Claude Code <strong style="color:var(--text)">skills</strong> are slash commands that give Claude specialized, reusable capabilities.
+      Instead of explaining what you want from scratch every time, you invoke a skill and Claude knows exactly what to do.
+      The following skills are used at specific points in this project — and in Module 9, you will build a custom one of your own.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span class="skill-tag">/xlsx</span>
+          <span style="font-size:0.7rem;color:var(--muted)">M2, M3, M7</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;">Read, write, and manipulate Excel spreadsheets. Housing data often arrives as .xlsx — this skill handles it cleanly.</p>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span class="skill-tag">/schedule</span>
+          <span style="font-size:0.7rem;color:var(--muted)">M2, M9</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;">Create and manage scheduled remote agents that run on a cron schedule. Used to wire up the Fetcher agent and the full multi-agent pipeline.</p>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span class="skill-tag">/pdf</span>
+          <span style="font-size:0.7rem;color:var(--muted)">M5, M8</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;">Create and extract PDF files. Used to export EDA findings and generate polished market summary reports from the Reporter agent.</p>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span class="skill-tag">/simplify</span>
+          <span style="font-size:0.7rem;color:var(--muted)">M6, M7</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;">Reviews changed code for reuse, quality, and efficiency then fixes issues. Run it after finishing the pipeline and ML code to tighten everything up.</p>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span class="skill-tag">/claude-api</span>
+          <span style="font-size:0.7rem;color:var(--muted)">M8, M9</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;">Build, debug, and optimize Claude API apps with prompt caching built in. The primary skill for constructing the Reporter agent and multi-agent orchestrator.</p>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span class="skill-tag">/loop</span>
+          <span style="font-size:0.7rem;color:var(--muted)">M9</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;">Run a prompt or command on a recurring interval. Used in Module 9 to poll agents during development and test that the full scheduled pipeline is working.</p>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(124,92,191,0.08),rgba(74,111,165,0.05));border:1px solid rgba(124,92,191,0.25);border-radius:8px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span class="skill-tag" style="background:rgba(124,92,191,0.1);border-color:rgba(124,92,191,0.3);color:var(--accent2)">/skill-creator</span>
+          <span style="font-size:0.7rem;color:var(--muted)">M9 · custom</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;">In Module 9 you will use <code style="font-family:var(--mono);font-size:0.85em">/skill-creator</code> to build a custom <code style="font-family:var(--mono);font-size:0.85em">/housing-report</code> skill — so generating a full market report becomes a single command.</p>
+      </div>
+    </div>
   </div>
 
   <hr />
@@ -568,17 +672,22 @@
     </p>
     <div class="vision-steps">
       <div class="vision-step">
-        <div class="vision-num current">1</div>
+        <div class="vision-num" style="background:var(--green);border-color:var(--green);color:#fff;">✓</div>
         <div class="vision-step-body">
           <div class="vstep-title">Foundation — Version Control &amp; Project Structure</div>
           <div class="vstep-desc">Git, GitHub, and a clean project layout. Every professional data science project starts here. Without version control, you cannot collaborate, roll back mistakes, or share reproducible work.</div>
         </div>
       </div>
       <div class="vision-step">
-        <div class="vision-num">2</div>
+        <div class="vision-num current">2</div>
         <div class="vision-step-body">
-          <div class="vstep-title">Data Acquisition — Getting Real Housing Data</div>
-          <div class="vstep-desc">Sourcing, downloading, and storing raw data about El Dorado Hills and Folsom home sales. ML models are only as good as the data behind them — understanding where your data comes from is non-negotiable.</div>
+          <div class="vstep-title">Data Acquisition — Your First Scheduled Agent</div>
+          <div class="vstep-desc">Source and store real El Dorado Hills and Folsom home sales data — and write your first agent to fetch it automatically on a schedule. Instead of downloading files by hand, you will build a Python script that runs on its own (daily, weekly, or on demand) and saves fresh data to disk. This is your introduction to agentic thinking: code that acts autonomously, not just code that runs when you click run.</div>
+          <div class="vstep-skills">
+            <span class="vstep-skills-label">Skills</span>
+            <span class="skill-tag">/xlsx</span>
+            <span class="skill-tag">/schedule</span>
+          </div>
         </div>
       </div>
       <div class="vision-step">
@@ -586,6 +695,10 @@
         <div class="vision-step-body">
           <div class="vstep-title">pandas &amp; Jupyter — The Core Data Science Toolkit</div>
           <div class="vstep-desc">pandas is the library that lets you manipulate tabular data in Python. Jupyter notebooks are the interactive environment where data scientists explore, visualize, and document their thinking. These two tools are used in virtually every real-world data science project.</div>
+          <div class="vstep-skills">
+            <span class="vstep-skills-label">Skills</span>
+            <span class="skill-tag">/xlsx</span>
+          </div>
         </div>
       </div>
       <div class="vision-step">
@@ -593,13 +706,21 @@
         <div class="vision-step-body">
           <div class="vstep-title">EDA — Exploratory Data Analysis</div>
           <div class="vstep-desc">Before building any model, you need to understand your data deeply — distributions, outliers, correlations, missing values. EDA is how you ask questions of your data before the data asks questions of you.</div>
+          <div class="vstep-skills">
+            <span class="vstep-skills-label">Skills</span>
+            <span class="skill-tag">/pdf</span>
+          </div>
         </div>
       </div>
       <div class="vision-step">
         <div class="vision-num">6</div>
         <div class="vision-step-body">
           <div class="vstep-title">Data Pipeline — Automating the Flow from Raw to Ready</div>
-          <div class="vstep-desc">A pipeline takes raw data and transforms it into clean, feature-rich data ready for a model. This is where data cleaning, feature engineering, and preprocessing live. Building a reusable pipeline means you can re-run the whole process with one command.</div>
+          <div class="vstep-desc">Build a reusable pipeline that takes raw housing data and transforms it into clean, feature-rich data ready for a model. You will also give your pipeline an <em>agent interface</em> — a set of callable tools that other agents can invoke. The Fetcher agent from Module 2 hands data off here; the Analyst agent in Module 9 will trigger it automatically. This is how real automated systems chain work across agents.</div>
+          <div class="vstep-skills">
+            <span class="vstep-skills-label">Skills</span>
+            <span class="skill-tag">/simplify</span>
+          </div>
         </div>
       </div>
       <div class="vision-step">
@@ -607,13 +728,36 @@
         <div class="vision-step-body">
           <div class="vstep-title">Machine Learning — Predicting Home Prices</div>
           <div class="vstep-desc">Train models that learn patterns in historical sales data and predict future prices. You will explore regression algorithms, evaluate model accuracy, tune parameters, and understand what features drive value in El Dorado Hills and Folsom specifically.</div>
+          <div class="vstep-skills">
+            <span class="vstep-skills-label">Skills</span>
+            <span class="skill-tag">/simplify</span>
+            <span class="skill-tag">/xlsx</span>
+          </div>
         </div>
       </div>
       <div class="vision-step">
         <div class="vision-num">8</div>
         <div class="vision-step-body">
-          <div class="vstep-title">AI Integration — Claude-Powered Market Summaries</div>
-          <div class="vstep-desc">Use the Claude API to automatically generate plain-English market summaries from your model's predictions and data insights. This is where your data pipeline and ML output become something a real person can read, act on, and share.</div>
+          <div class="vstep-title">AI Integration — Claude API, Tool Use &amp; the Reporter Agent</div>
+          <div class="vstep-desc">Connect Claude to your pipeline via the Anthropic API and introduce <em>tool use</em> — giving Claude the ability to call your Python functions directly so it can query live data, not just static text. You will build a <strong>Reporter agent</strong>: it receives the latest model predictions, calls your pipeline tools to pull fresh statistics, and produces a plain-English market summary. This is your first fully autonomous AI agent with real tools attached.</div>
+          <div class="vstep-skills">
+            <span class="vstep-skills-label">Skills</span>
+            <span class="skill-tag">/claude-api</span>
+            <span class="skill-tag">/pdf</span>
+          </div>
+        </div>
+      </div>
+      <div class="vision-step">
+        <div class="vision-num">9</div>
+        <div class="vision-step-body">
+          <div class="vstep-title">Agentic Systems — Agents That Run, Collaborate &amp; Schedule</div>
+          <div class="vstep-desc">Build a multi-agent system where specialized agents work together autonomously: a <em>Fetcher</em> agent pulls fresh listing data on a schedule, an <em>Analyst</em> agent runs your ML pipeline and detects market shifts, and a <em>Reporter</em> agent drafts a Claude-powered summary and saves it to disk. Wire them to a scheduler so the whole workflow runs hands-free — daily, weekly, or on demand. This is production-grade agentic AI applied to a real problem you care about.</div>
+          <div class="vstep-skills">
+            <span class="vstep-skills-label">Skills</span>
+            <span class="skill-tag">/claude-api</span>
+            <span class="skill-tag">/schedule</span>
+            <span class="skill-tag">/loop</span>
+          </div>
         </div>
       </div>
     </div>
@@ -809,18 +953,121 @@
     </div>
   </div>
 
+
+  <!-- ── Step 3 ─────────────────────────────────────────────────── -->
+  <div class="step-card open" id="step-1-3">
+    <div class="step-header" onclick="toggleStep(this)">
+      <div class="step-header-left">
+        <span class="step-num">Step 3</span>
+        <span class="step-title">Project Structure, README &amp; Python Setup</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge badge-complete"><span class="badge-dot"></span> Complete</span>
+        <span class="chevron">▶</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-meta-grid">
+        <div class="meta-block">
+          <div class="meta-label">What Was Built</div>
+          <div class="meta-value">
+            A full project skeleton: all future folders created upfront
+            (<strong>data/raw</strong>, <strong>data/processed</strong>,
+            <strong>notebooks/</strong>, <strong>src/agents</strong>,
+            <strong>src/pipeline</strong>, <strong>src/models</strong>,
+            <strong>models/</strong>, <strong>reports/</strong>), a fleshed-out
+            <strong>README.md</strong> with setup instructions and roadmap,
+            a <strong>requirements.txt</strong> with all Python dependencies,
+            and a <strong>.python-version</strong> file pinning Python 3.14.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Why It Matters</div>
+          <div class="meta-value">
+            Creating the full folder structure before writing any code forces
+            you to think about architecture upfront. It also means every future
+            file has an obvious, agreed-upon home — no guessing where things go.
+            A good README is the front door of your project; anyone (including
+            future you) can understand what it does and how to run it in minutes.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">What I Learned</div>
+          <div class="meta-value">
+            A <strong>virtual environment</strong> (venv) is an isolated Python
+            installation just for this project. It prevents library conflicts
+            between projects. A <strong>requirements.txt</strong> lists every
+            library the project needs — anyone can recreate your exact setup
+            with one command: <code style="font-family:var(--mono);font-size:0.9em;color:var(--accent)">pip install -r requirements.txt</code>.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Files Created</div>
+          <div class="meta-value" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+            <span class="filepath">📄 README.md (updated)</span>
+            <span class="filepath">📄 requirements.txt</span>
+            <span class="filepath">📄 .python-version</span>
+            <span class="filepath">📁 data/raw/ &nbsp;data/processed/</span>
+            <span class="filepath">📁 notebooks/ &nbsp;src/ &nbsp;models/ &nbsp;reports/</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;">Setting Up the Virtual Environment</div>
+      <div class="code-wrap">
+        <div class="code-wrap-header"><span>bash</span> <span>Terminal — run once</span></div>
+        <pre><span class="cmt"># Create the virtual environment inside the project</span>
+<span class="fn">python3</span> -m venv .venv
+
+<span class="cmt"># Activate it (you do this every time you open a new terminal)</span>
+<span class="fn">source</span> .venv/bin/activate
+
+<span class="cmt"># Install all dependencies in one command</span>
+<span class="fn">pip</span> install -r requirements.txt
+
+<span class="cmt"># Your prompt will show (.venv) when the environment is active</span></pre>
+      </div>
+
+      <div class="ml-banner">
+        <div class="ml-label">How This Connects to Machine Learning</div>
+        <p>
+          Every library in <code style="font-family:var(--mono);font-size:0.9em">requirements.txt</code> has a specific role in the ML pipeline you are building.
+          <strong>pandas</strong> and <strong>numpy</strong> handle data manipulation.
+          <strong>scikit-learn</strong> provides the ML algorithms.
+          <strong>matplotlib</strong> and <strong>seaborn</strong> visualize patterns in the data.
+          <strong>anthropic</strong> connects to the Claude API for AI-generated summaries.
+          <strong>APScheduler</strong> runs your agents on a schedule — this is what makes the whole system autonomous.
+          Installing them now means they are ready the moment each module needs them.
+        </p>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 
 <!-- ══════════════════════════════════════════════════════════════════
-     LOCKED MODULE TABS (2–8) — placeholder content
+     MODULE TAB 2
 ═══════════════════════════════════════════════════════════════════ -->
 <section class="tab-content" id="tab-module2">
-  <div style="text-align:center;padding:80px 0;color:var(--muted);">
-    <div style="font-size:2.5rem;margin-bottom:16px;">🔒</div>
-    <div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 2 is locked</div>
-    <div style="font-size:0.85rem;">Complete Module 1 to unlock Getting the Data.</div>
+
+  <div style="margin-bottom:28px;">
+    <p class="section-title">Module 2 — Data &amp; First Agent</p>
+    <p style="font-size:0.875rem;color:var(--text-dim);line-height:1.65;">
+      Before any analysis can happen, you need real data — and a reliable way
+      to keep it fresh. This module covers finding housing data for El Dorado
+      Hills and Folsom, writing Python for the first time in this project, and
+      building your first scheduled agent that fetches new data automatically.
+    </p>
   </div>
+
+  <div class="current-callout">
+    <div class="pulse"></div>
+    <div class="current-callout-text">
+      <strong>Up next:</strong> Step 1 — Find a data source and write a Python script to download it
+    </div>
+  </div>
+
 </section>
 <section class="tab-content" id="tab-module3">
   <div style="text-align:center;padding:80px 0;color:var(--muted);">
@@ -842,7 +1089,10 @@
   <div style="text-align:center;padding:80px 0;color:var(--muted);"><div style="font-size:2.5rem;margin-bottom:16px;">🔒</div><div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 7 is locked</div></div>
 </section>
 <section class="tab-content" id="tab-module8">
-  <div style="text-align:center;padding:80px 0;color:var(--muted);"><div style="font-size:2.5rem;margin-bottom:16px;">🔒</div><div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 8 is locked</div></div>
+  <div style="text-align:center;padding:80px 0;color:var(--muted);"><div style="font-size:2.5rem;margin-bottom:16px;">🔒</div><div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 8 is locked</div><div style="font-size:0.85rem;">Complete Module 7 to unlock AI Integration.</div></div>
+</section>
+<section class="tab-content" id="tab-module9">
+  <div style="text-align:center;padding:80px 0;color:var(--muted);"><div style="font-size:2.5rem;margin-bottom:16px;">🔒</div><div style="font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px;">Module 9 is locked</div><div style="font-size:0.85rem;">Complete Module 8 to unlock Agentic Systems.</div></div>
 </section>
 
 
@@ -855,44 +1105,22 @@
     This tree updates after every step. Each file shows what it is and why it exists.
   </p>
   <div class="tree">
-    <div class="tree-line">
-      <span class="tree-connector">  </span>
-      <span class="tree-icon">📁</span>
-      <span class="tree-name dir">housing_market/</span>
-      <span class="tree-desc">— project root</span>
-    </div>
-    <div class="tree-line">
-      <span class="tree-connector">  ├── </span>
-      <span class="tree-icon">📄</span>
-      <span class="tree-name hidden-file">.gitignore</span>
-      <span class="tree-desc">— tells Git which files to never track</span>
-    </div>
-    <div class="tree-line">
-      <span class="tree-connector">  ├── </span>
-      <span class="tree-icon">📄</span>
-      <span class="tree-name">README.md</span>
-      <span class="tree-desc">— project description shown on GitHub</span>
-    </div>
-    <div class="tree-line">
-      <span class="tree-connector">  └── </span>
-      <span class="tree-icon">📄</span>
-      <span class="tree-name" style="color:var(--yellow)">dashboard.html</span>
-      <span class="tree-desc">— this learning dashboard (Module 1, Step 2) ← new</span>
-    </div>
-  </div>
-
-  <div style="margin-top:20px;">
-    <div class="card">
-      <div class="card-title" style="font-size:0.85rem;">What the folders will look like later</div>
-      <p style="font-size:0.82rem;">
-        As we progress through the modules, this tree will grow. You will eventually
-        see folders like <code style="font-family:var(--mono);font-size:0.9em;color:var(--accent)">data/</code> (raw housing data),
-        <code style="font-family:var(--mono);font-size:0.9em;color:var(--accent)">notebooks/</code> (Jupyter analysis files),
-        <code style="font-family:var(--mono);font-size:0.9em;color:var(--accent)">src/</code> (Python scripts and pipeline code), and
-        <code style="font-family:var(--mono);font-size:0.9em;color:var(--accent)">models/</code> (trained ML model files).
-        A well-organized folder structure is itself a form of documentation.
-      </p>
-    </div>
+    <div class="tree-line"><span class="tree-connector">  </span><span class="tree-icon">📁</span><span class="tree-name dir">housing_market/</span><span class="tree-desc">— project root</span></div>
+    <div class="tree-line"><span class="tree-connector">  ├── </span><span class="tree-icon">📁</span><span class="tree-name dir">data/</span><span class="tree-desc">— all data lives here, never committed to Git</span></div>
+    <div class="tree-line"><span class="tree-connector">  │   ├── </span><span class="tree-icon">📁</span><span class="tree-name dir">raw/</span><span class="tree-desc">— original downloaded data, never modified</span></div>
+    <div class="tree-line"><span class="tree-connector">  │   └── </span><span class="tree-icon">📁</span><span class="tree-name dir">processed/</span><span class="tree-desc">— cleaned &amp; feature-engineered, ready for modeling</span></div>
+    <div class="tree-line"><span class="tree-connector">  ├── </span><span class="tree-icon">📁</span><span class="tree-name dir">notebooks/</span><span class="tree-desc">— Jupyter notebooks for exploration and analysis</span></div>
+    <div class="tree-line"><span class="tree-connector">  ├── </span><span class="tree-icon">📁</span><span class="tree-name dir">src/</span><span class="tree-desc">— all Python source code</span></div>
+    <div class="tree-line"><span class="tree-connector">  │   ├── </span><span class="tree-icon">📁</span><span class="tree-name dir">agents/</span><span class="tree-desc">— fetcher, analyst, reporter agents (Module 2, 8, 9)</span></div>
+    <div class="tree-line"><span class="tree-connector">  │   ├── </span><span class="tree-icon">📁</span><span class="tree-name dir">pipeline/</span><span class="tree-desc">— data cleaning and feature engineering (Module 6)</span></div>
+    <div class="tree-line"><span class="tree-connector">  │   └── </span><span class="tree-icon">📁</span><span class="tree-name dir">models/</span><span class="tree-desc">— model training and evaluation scripts (Module 7)</span></div>
+    <div class="tree-line"><span class="tree-connector">  ├── </span><span class="tree-icon">📁</span><span class="tree-name dir">models/</span><span class="tree-desc">— saved trained model files (.pkl)</span></div>
+    <div class="tree-line"><span class="tree-connector">  ├── </span><span class="tree-icon">📁</span><span class="tree-name dir">reports/</span><span class="tree-desc">— auto-generated market summaries from Reporter agent</span></div>
+    <div class="tree-line"><span class="tree-connector">  ├── </span><span class="tree-icon">📄</span><span class="tree-name hidden-file">.gitignore</span><span class="tree-desc">— tells Git which files to never track</span></div>
+    <div class="tree-line"><span class="tree-connector">  ├── </span><span class="tree-icon">📄</span><span class="tree-name hidden-file">.python-version</span><span class="tree-desc">— pins Python 3.14 for this project</span></div>
+    <div class="tree-line"><span class="tree-connector">  ├── </span><span class="tree-icon">📄</span><span class="tree-name">requirements.txt</span><span class="tree-desc">— all Python dependencies (install with pip)</span></div>
+    <div class="tree-line"><span class="tree-connector">  ├── </span><span class="tree-icon">📄</span><span class="tree-name">README.md</span><span class="tree-desc">— project overview, setup instructions, roadmap</span></div>
+    <div class="tree-line"><span class="tree-connector">  └── </span><span class="tree-icon">📄</span><span class="tree-name" style="color:var(--yellow)">dashboard.html</span><span class="tree-desc">— this learning dashboard</span></div>
   </div>
 </section>
 
@@ -1038,6 +1266,80 @@
         with others, and provides tools for collaboration like pull requests and
         issues. Git is the tool; GitHub is the hosting platform. They are
         related but not the same thing.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">skill (Claude Code)</div>
+        <div class="gloss-module">Module 1 · Step 3</div>
+      </div>
+      <div class="gloss-def">
+        A slash command in Claude Code that gives Claude a specialized, reusable
+        capability — like <code style="font-family:var(--mono);font-size:0.9em">/xlsx</code> for spreadsheets or
+        <code style="font-family:var(--mono);font-size:0.9em">/claude-api</code> for building Anthropic API apps.
+        Instead of re-explaining what you want each time, you invoke the skill and Claude
+        follows a battle-tested playbook. You can also build your own custom skills
+        using <code style="font-family:var(--mono);font-size:0.9em">/skill-creator</code> — which is exactly what
+        Module 9 does to create a <code style="font-family:var(--mono);font-size:0.9em">/housing-report</code> command
+        that generates a full market report in one shot.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">virtual environment</div>
+        <div class="gloss-module">Module 1 · Step 3</div>
+      </div>
+      <div class="gloss-def">
+        An isolated copy of Python dedicated to one project. When you activate a
+        virtual environment (<code style="font-family:var(--mono);font-size:0.9em">source .venv/bin/activate</code>),
+        any libraries you install go into that project's private folder, not
+        your system Python. This prevents version conflicts between projects —
+        Project A can use pandas 1.5 while Project B uses pandas 2.0 without
+        either breaking.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">requirements.txt</div>
+        <div class="gloss-module">Module 1 · Step 3</div>
+      </div>
+      <div class="gloss-def">
+        A plain text file listing every Python library a project depends on,
+        one per line. Running <code style="font-family:var(--mono);font-size:0.9em">pip install -r requirements.txt</code>
+        installs all of them at once. This is how you share a reproducible
+        environment — anyone who clones your repo can get the exact same setup
+        with one command.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">agent</div>
+        <div class="gloss-module">Module 1 · Step 3</div>
+      </div>
+      <div class="gloss-def">
+        In AI, an <em>agent</em> is a program that perceives its environment,
+        makes decisions, and takes actions — autonomously, without a human
+        clicking "run" each time. In this project, agents are Python scripts
+        that fetch data, run the ML pipeline, and generate reports on a
+        schedule. The key difference from a regular script: an agent can
+        react to what it finds, use tools, and hand work off to other agents.
+      </div>
+    </div>
+
+    <div class="gloss-item">
+      <div>
+        <div class="gloss-term">APScheduler</div>
+        <div class="gloss-module">Module 1 · Step 3</div>
+      </div>
+      <div class="gloss-def">
+        A Python library for scheduling code to run at specific times or
+        intervals — daily, hourly, every Monday at 6am, etc. It is what
+        will make this project's agents run hands-free. Think of it as a
+        built-in alarm clock for your Python scripts.
       </div>
     </div>
 
