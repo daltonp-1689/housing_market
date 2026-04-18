@@ -455,146 +455,195 @@
     /* ── Divider ──────────────────────────────────────────────────── */
     hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
 
-    /* ── Workflow Diagram ─────────────────────────────────────────── */
-    .wf-diagram {
+    /* ── Data Flow Diagram ────────────────────────────────────────── */
+    .dp-pipeline {
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: 0;
     }
-    .wf-phase {
-      background: var(--surface);
-      border: 1px solid var(--border);
+    .dp-stage {
+      width: 100%;
+      border: 1.5px solid var(--border);
       border-radius: 12px;
-      padding: 20px 24px 24px;
+      padding: 18px 22px 22px;
+      background: var(--surface);
     }
-    .wf-phase-header {
+    .dp-stage-source  { border-color: #dbb84a; background: #fffdf0; }
+    .dp-stage-agent   { border-color: #a8bede; background: #eef3fb; }
+    .dp-stage-agent.dp-stage-current {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(74,111,165,0.12);
+    }
+    .dp-stage-storage      { border-color: #ccc; background: #f9f9f9; }
+    .dp-stage-storage-clean{ border-color: #7dd9b0; background: #f0faf5; }
+    .dp-stage-process { border-color: #c0b0e8; background: #f5f2fb; }
+    .dp-stage-model   { border-color: var(--accent); background: #eef3fb; }
+    .dp-stage-notebook{ border-color: #dbb84a; background: #fffdf0; }
+    .dp-stage-output  { border-color: var(--accent2); background: #f8f4ff; }
+    .dp-stage-header {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
-    .wf-phase-num {
-      font-size: 0.63rem;
+    .dp-stage-num {
+      font-family: var(--mono);
+      font-size: 0.62rem;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
       color: var(--muted);
-      background: var(--surface2);
+      background: rgba(0,0,0,0.04);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+    .dp-stage-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+      flex: 1;
+    }
+    .dp-stage-where {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      background: rgba(0,0,0,0.04);
       border: 1px solid var(--border);
       border-radius: 4px;
       padding: 2px 8px;
-      font-family: var(--mono);
+      white-space: nowrap;
     }
-    .wf-phase-title {
-      font-size: 0.9rem;
+    .dp-building {
+      color: var(--accent) !important;
+      background: rgba(74,111,165,0.08) !important;
+      border-color: rgba(74,111,165,0.3) !important;
+      font-family: var(--font) !important;
       font-weight: 700;
+    }
+    .dp-stage-body {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .dp-node {
+      flex: 1;
+      min-width: 155px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .dp-node-wide { flex: 1 1 100%; }
+    .dp-node-claude {
+      border-color: rgba(124,92,191,0.35);
+      background: rgba(124,92,191,0.04);
+    }
+    .dp-node-icon {
+      font-size: 1.05rem;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .dp-node-name {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 600;
       color: var(--text);
     }
-    .wf-phase-nodes {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0;
+    .dp-node-path {
+      display: inline-block;
+      align-self: flex-start;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--green);
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin: 2px 0 4px;
     }
-    .wf-node {
+    .dp-node-desc {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .dp-storage-note {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      text-align: center;
+    }
+    /* Arrows */
+    .dp-arrow {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-      padding: 16px 20px;
-      border-radius: 10px;
-      border: 2px solid var(--border);
-      background: var(--surface2);
-      min-width: 138px;
-      text-align: center;
-      position: relative;
+      gap: 0;
+      padding: 4px 0;
     }
-    .wf-node.wf-done {
-      border-color: var(--green);
-      background: #f0faf5;
-    }
-    .wf-node.wf-current {
-      border-color: var(--accent);
-      background: #eef3fb;
-      box-shadow: 0 0 0 4px rgba(74,111,165,0.13);
-    }
-    .wf-node.wf-locked {
-      opacity: 0.45;
-    }
-    .wf-node-id {
-      font-family: var(--mono);
-      font-size: 0.63rem;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .wf-node-name {
-      font-size: 0.8rem;
+    .dp-arrow-label {
+      font-size: 0.62rem;
       font-weight: 600;
-      color: var(--text);
-      line-height: 1.3;
-    }
-    .wf-node-pulse {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 3px rgba(74,111,165,0.25);
-      animation: pulse 2s infinite;
-    }
-    .wf-here-tag {
-      font-size: 0.58rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--accent);
-      background: rgba(74,111,165,0.1);
-      border: 1px solid rgba(74,111,165,0.2);
-      padding: 2px 7px;
-      border-radius: 4px;
-      margin-top: 2px;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 3px;
     }
-    .wf-h-arrow {
-      font-size: 1.3rem;
-      color: var(--border);
-      padding: 0 10px;
-      flex-shrink: 0;
+    .dp-arrow-shaft {
+      width: 2px;
+      height: 14px;
+      background: var(--border);
+    }
+    .dp-arrow-tip {
+      font-size: 0.58rem;
+      color: var(--muted);
       line-height: 1;
-      margin-bottom: 20px;
     }
-    .wf-connector {
+    /* Split / parallel branches */
+    .dp-split {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      align-items: flex-start;
+    }
+    .dp-split-branch { flex: 1; }
+    .dp-split-divider {
       display: flex;
       align-items: center;
-      padding-left: 44px;
-      height: 30px;
-      color: var(--border);
-      font-size: 1.3rem;
-      line-height: 1;
+      justify-content: center;
+      padding-top: 56px;
+      font-size: 1.1rem;
+      color: var(--muted);
+      flex-shrink: 0;
     }
-    .wf-legend {
+    /* Legend */
+    .dp-legend {
       display: flex;
-      gap: 24px;
+      gap: 20px;
       flex-wrap: wrap;
       margin-top: 24px;
-      padding-top: 20px;
+      padding-top: 18px;
       border-top: 1px solid var(--border);
+      width: 100%;
     }
-    .wf-legend-item {
+    .dp-legend-item {
       display: flex;
       align-items: center;
       gap: 7px;
-      font-size: 0.78rem;
+      font-size: 0.77rem;
       color: var(--text-dim);
     }
-    .wf-legend-swatch {
-      width: 14px;
-      height: 14px;
-      border-radius: 4px;
-      border: 2px solid;
+    .dp-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
       flex-shrink: 0;
     }
 
@@ -641,7 +690,7 @@
   <button class="tab-btn active" data-tab="overview">Overview</button>
   <button class="tab-btn" data-tab="tree">Project Tree</button>
   <button class="tab-btn" data-tab="glossary">Glossary</button>
-  <button class="tab-btn" data-tab="workflow">Workflow</button>
+  <button class="tab-btn" data-tab="workflow">Data Flow</button>
   <button class="tab-btn active-module-tab" data-tab="module1">Module 1 · Setup</button>
   <button class="tab-btn" data-tab="module2">Module 2 · Data &amp; Agent</button>
   <button class="tab-btn locked" data-tab="module3" title="Locked"><span class="lock-icon">🔒</span> Module 3 · pandas</button>
@@ -911,139 +960,298 @@
 
 
 <!-- ══════════════════════════════════════════════════════════════════
-     TAB: WORKFLOW
+     TAB: DATA FLOW
 ═══════════════════════════════════════════════════════════════════ -->
 <section class="tab-content" id="tab-workflow">
 
-  <p class="section-title">Workflow — Your Project Journey</p>
+  <p class="section-title">Data Flow — How Data Moves Through This Project</p>
+  <p style="font-size:0.85rem;color:var(--text-dim);line-height:1.65;margin-bottom:24px;">
+    Every file, folder, and script has a role in the pipeline. Raw listing data enters at the top and exits as an automated PDF market report at the bottom — with ML predictions baked in.
+  </p>
 
   <div class="current-callout" style="margin-bottom:28px;">
     <div class="pulse"></div>
     <div class="current-callout-text">
-      <strong>You are here:</strong> Module 2 — Data &amp; First Agent &nbsp;·&nbsp; Step 1 — Finding &amp; Fetching Housing Data
+      <strong>Currently building:</strong> Fetcher Agent (Module 2) &nbsp;·&nbsp;
+      <span class="filepath" style="font-size:0.76rem;">src/agents/fetcher.py</span>
     </div>
   </div>
 
-  <div class="wf-diagram">
+  <div class="dp-pipeline">
 
-    <!-- Phase 1 -->
-    <div class="wf-phase">
-      <div class="wf-phase-header">
-        <span class="wf-phase-num">Phase 1</span>
-        <span class="wf-phase-title">Foundation</span>
+    <!-- ── 01. Data Sources ────────────────────────────────────────── -->
+    <div class="dp-stage dp-stage-source">
+      <div class="dp-stage-header">
+        <span class="dp-stage-num">01</span>
+        <span class="dp-stage-title">Data Sources</span>
+        <span class="dp-stage-where">external</span>
       </div>
-      <div class="wf-phase-nodes">
-        <div class="wf-node wf-done">
-          <div class="wf-node-id">M1</div>
-          <div class="wf-node-name">GitHub &amp; Setup</div>
-          <span class="badge badge-complete"><span class="badge-dot"></span> Complete</span>
+      <div class="dp-stage-body">
+        <div class="dp-node">
+          <div class="dp-node-icon">🏠</div>
+          <div class="dp-node-name">MLS / Zillow Export</div>
+          <div class="dp-node-desc">CSV or XLSX of recent home sales in El Dorado Hills &amp; Folsom</div>
         </div>
-      </div>
-    </div>
-
-    <div class="wf-connector">↓</div>
-
-    <!-- Phase 2 -->
-    <div class="wf-phase">
-      <div class="wf-phase-header">
-        <span class="wf-phase-num">Phase 2</span>
-        <span class="wf-phase-title">Data Acquisition</span>
-      </div>
-      <div class="wf-phase-nodes">
-        <div class="wf-node wf-current">
-          <div class="wf-node-pulse"></div>
-          <div class="wf-node-id">M2</div>
-          <div class="wf-node-name">Data &amp; Agent</div>
-          <span class="badge badge-progress"><span class="badge-dot"></span> In Progress</span>
-          <div class="wf-here-tag">YOU ARE HERE</div>
+        <div class="dp-node">
+          <div class="dp-node-icon">📊</div>
+          <div class="dp-node-name">FRED / Census API</div>
+          <div class="dp-node-desc">Interest rates, inventory levels, median income by zip</div>
         </div>
-        <div class="wf-h-arrow">→</div>
-        <div class="wf-node wf-locked">
-          <div class="wf-node-id">M3</div>
-          <div class="wf-node-name">pandas</div>
-          <span class="badge badge-pending">Locked</span>
-        </div>
-        <div class="wf-h-arrow">→</div>
-        <div class="wf-node wf-locked">
-          <div class="wf-node-id">M4</div>
-          <div class="wf-node-name">Jupyter</div>
-          <span class="badge badge-pending">Locked</span>
+        <div class="dp-node">
+          <div class="dp-node-icon">📄</div>
+          <div class="dp-node-name">Manual Upload</div>
+          <div class="dp-node-desc">Historical CSVs dropped directly into data/raw/</div>
         </div>
       </div>
     </div>
 
-    <div class="wf-connector">↓</div>
+    <div class="dp-arrow">
+      <div class="dp-arrow-label">auto-fetched on schedule by</div>
+      <div class="dp-arrow-shaft"></div>
+      <div class="dp-arrow-tip">▼</div>
+    </div>
 
-    <!-- Phase 3 -->
-    <div class="wf-phase">
-      <div class="wf-phase-header">
-        <span class="wf-phase-num">Phase 3</span>
-        <span class="wf-phase-title">Analysis &amp; Modeling</span>
+    <!-- ── 02. Fetcher Agent ───────────────────────────────────────── -->
+    <div class="dp-stage dp-stage-agent dp-stage-current">
+      <div class="dp-stage-header">
+        <span class="dp-stage-num">02</span>
+        <span class="dp-stage-title">Fetcher Agent</span>
+        <span class="dp-stage-where dp-building">Building now · M2</span>
       </div>
-      <div class="wf-phase-nodes">
-        <div class="wf-node wf-locked">
-          <div class="wf-node-id">M5</div>
-          <div class="wf-node-name">Exploratory Analysis</div>
-          <span class="badge badge-pending">Locked</span>
-        </div>
-        <div class="wf-h-arrow">→</div>
-        <div class="wf-node wf-locked">
-          <div class="wf-node-id">M6</div>
-          <div class="wf-node-name">Data Pipeline</div>
-          <span class="badge badge-pending">Locked</span>
-        </div>
-        <div class="wf-h-arrow">→</div>
-        <div class="wf-node wf-locked">
-          <div class="wf-node-id">M7</div>
-          <div class="wf-node-name">Machine Learning</div>
-          <span class="badge badge-pending">Locked</span>
+      <div class="dp-stage-body">
+        <div class="dp-node dp-node-wide">
+          <div class="dp-node-icon">🤖</div>
+          <div class="dp-node-name">fetcher.py</div>
+          <div class="dp-node-path">src/agents/fetcher.py</div>
+          <div class="dp-node-desc">Downloads fresh data from sources, does basic validation, and saves files into <code style="font-family:var(--mono);font-size:0.9em">data/raw/</code>. Runs hands-free on a cron schedule via APScheduler — no manual downloads needed once wired up.</div>
         </div>
       </div>
     </div>
 
-    <div class="wf-connector">↓</div>
+    <div class="dp-arrow">
+      <div class="dp-arrow-label">writes raw files to</div>
+      <div class="dp-arrow-shaft"></div>
+      <div class="dp-arrow-tip">▼</div>
+    </div>
 
-    <!-- Phase 4 -->
-    <div class="wf-phase">
-      <div class="wf-phase-header">
-        <span class="wf-phase-num">Phase 4</span>
-        <span class="wf-phase-title">AI System</span>
+    <!-- ── 03. Raw Storage ────────────────────────────────────────── -->
+    <div class="dp-stage dp-stage-storage">
+      <div class="dp-stage-header">
+        <span class="dp-stage-num">03</span>
+        <span class="dp-stage-title">Raw Storage</span>
+        <span class="dp-stage-where">data/raw/</span>
       </div>
-      <div class="wf-phase-nodes">
-        <div class="wf-node wf-locked">
-          <div class="wf-node-id">M8</div>
-          <div class="wf-node-name">AI Integration</div>
-          <span class="badge badge-pending">Locked</span>
+      <div class="dp-stage-body">
+        <div class="dp-node">
+          <div class="dp-node-icon">📁</div>
+          <div class="dp-node-name">sales_edh.csv</div>
+          <div class="dp-node-desc">El Dorado Hills home sales — original, never modified</div>
         </div>
-        <div class="wf-h-arrow">→</div>
-        <div class="wf-node wf-locked" style="border-style:dashed;border-color:rgba(124,92,191,0.4);opacity:0.5;">
-          <div class="wf-node-id" style="color:var(--accent2);">M9</div>
-          <div class="wf-node-name">Agentic Systems</div>
-          <span class="badge" style="background:rgba(124,92,191,0.1);color:var(--accent2);border:1px solid rgba(124,92,191,0.25);">Capstone</span>
+        <div class="dp-node">
+          <div class="dp-node-icon">📁</div>
+          <div class="dp-node-name">sales_folsom.csv</div>
+          <div class="dp-node-desc">Folsom home sales — original, never modified</div>
+        </div>
+        <div class="dp-node">
+          <div class="dp-node-icon">📁</div>
+          <div class="dp-node-name">economic.csv</div>
+          <div class="dp-node-desc">Rates, inventory, macroeconomic indicators</div>
+        </div>
+      </div>
+      <div class="dp-storage-note">Git-ignored &nbsp;·&nbsp; Never modified after saving &nbsp;·&nbsp; Source of truth</div>
+    </div>
+
+    <div class="dp-arrow">
+      <div class="dp-arrow-label">cleaned &amp; transformed by</div>
+      <div class="dp-arrow-shaft"></div>
+      <div class="dp-arrow-tip">▼</div>
+    </div>
+
+    <!-- ── 04. Pipeline ───────────────────────────────────────────── -->
+    <div class="dp-stage dp-stage-process">
+      <div class="dp-stage-header">
+        <span class="dp-stage-num">04</span>
+        <span class="dp-stage-title">Data Pipeline</span>
+        <span class="dp-stage-where">src/pipeline/ · M6</span>
+      </div>
+      <div class="dp-stage-body">
+        <div class="dp-node">
+          <div class="dp-node-icon">🧹</div>
+          <div class="dp-node-name">cleaner.py</div>
+          <div class="dp-node-desc">Handle nulls, fix column types, remove outliers</div>
+        </div>
+        <div class="dp-node">
+          <div class="dp-node-icon">⚙️</div>
+          <div class="dp-node-name">features.py</div>
+          <div class="dp-node-desc">Engineer new columns — price/sqft, home age, location score</div>
+        </div>
+        <div class="dp-node">
+          <div class="dp-node-icon">✅</div>
+          <div class="dp-node-name">validator.py</div>
+          <div class="dp-node-desc">Schema checks, range assertions, data quality report</div>
         </div>
       </div>
     </div>
 
-  </div>
+    <div class="dp-arrow">
+      <div class="dp-arrow-label">outputs model-ready data to</div>
+      <div class="dp-arrow-shaft"></div>
+      <div class="dp-arrow-tip">▼</div>
+    </div>
 
-  <!-- Legend -->
-  <div class="wf-legend">
-    <div class="wf-legend-item">
-      <div class="wf-legend-swatch" style="background:#f0faf5;border-color:var(--green);"></div>
-      <span>Complete</span>
+    <!-- ── 05. Processed Storage ─────────────────────────────────── -->
+    <div class="dp-stage dp-stage-storage-clean">
+      <div class="dp-stage-header">
+        <span class="dp-stage-num">05</span>
+        <span class="dp-stage-title">Processed Storage</span>
+        <span class="dp-stage-where">data/processed/</span>
+      </div>
+      <div class="dp-stage-body">
+        <div class="dp-node dp-node-wide">
+          <div class="dp-node-icon">📁</div>
+          <div class="dp-node-name">housing_clean.csv</div>
+          <div class="dp-node-desc">Fully cleaned dataset with all engineered features. This is what the ML models train on and what the Reporter agent queries for live statistics.</div>
+        </div>
+      </div>
     </div>
-    <div class="wf-legend-item">
-      <div class="wf-legend-swatch" style="background:#eef3fb;border-color:var(--accent);"></div>
-      <span>In Progress</span>
+
+    <div class="dp-arrow">
+      <div class="dp-arrow-label">feeds into</div>
+      <div class="dp-arrow-shaft"></div>
+      <div class="dp-arrow-tip">▼</div>
     </div>
-    <div class="wf-legend-item">
-      <div class="wf-legend-swatch" style="background:var(--surface2);border-color:var(--border);opacity:0.45;"></div>
-      <span>Locked</span>
+
+    <!-- ── 06. Parallel branches: ML + Notebooks ──────────────────── -->
+    <div class="dp-split">
+
+      <div class="dp-split-branch">
+        <div class="dp-stage dp-stage-model">
+          <div class="dp-stage-header">
+            <span class="dp-stage-num">06a</span>
+            <span class="dp-stage-title">ML Models</span>
+            <span class="dp-stage-where">src/models/ · M7</span>
+          </div>
+          <div class="dp-stage-body" style="flex-direction:column;">
+            <div class="dp-node">
+              <div class="dp-node-icon">🧠</div>
+              <div class="dp-node-name">train.py</div>
+              <div class="dp-node-desc">Trains regression models on the processed data to predict sale prices</div>
+            </div>
+            <div class="dp-node" style="margin-top:10px;">
+              <div class="dp-node-icon">💾</div>
+              <div class="dp-node-name">models/*.pkl</div>
+              <div class="dp-node-path">models/</div>
+              <div class="dp-node-desc">Saved trained model files, loaded by the Reporter agent</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dp-split-divider">&amp;</div>
+
+      <div class="dp-split-branch">
+        <div class="dp-stage dp-stage-notebook">
+          <div class="dp-stage-header">
+            <span class="dp-stage-num">06b</span>
+            <span class="dp-stage-title">Notebooks</span>
+            <span class="dp-stage-where">notebooks/ · M4–M5</span>
+          </div>
+          <div class="dp-stage-body" style="flex-direction:column;">
+            <div class="dp-node">
+              <div class="dp-node-icon">📓</div>
+              <div class="dp-node-name">eda.ipynb</div>
+              <div class="dp-node-desc">Exploratory analysis — distributions, trends, correlations, outliers</div>
+            </div>
+            <div class="dp-node" style="margin-top:10px;">
+              <div class="dp-node-icon">📈</div>
+              <div class="dp-node-name">visualizations</div>
+              <div class="dp-node-desc">Charts and plots used to understand what's in the data before modeling</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <div class="wf-legend-item">
-      <div class="wf-legend-swatch" style="background:rgba(124,92,191,0.05);border-color:rgba(124,92,191,0.4);border-style:dashed;opacity:0.6;"></div>
-      <span>Capstone</span>
+
+    <div class="dp-arrow">
+      <div class="dp-arrow-label">model predictions passed to</div>
+      <div class="dp-arrow-shaft"></div>
+      <div class="dp-arrow-tip">▼</div>
     </div>
+
+    <!-- ── 07. Reporter Agent ─────────────────────────────────────── -->
+    <div class="dp-stage dp-stage-agent">
+      <div class="dp-stage-header">
+        <span class="dp-stage-num">07</span>
+        <span class="dp-stage-title">Reporter Agent</span>
+        <span class="dp-stage-where">src/agents/ · M8–M9</span>
+      </div>
+      <div class="dp-stage-body">
+        <div class="dp-node">
+          <div class="dp-node-icon">🤖</div>
+          <div class="dp-node-name">reporter.py</div>
+          <div class="dp-node-path">src/agents/reporter.py</div>
+          <div class="dp-node-desc">Queries the pipeline via tool calls, reads model predictions, assembles the data payload</div>
+        </div>
+        <div class="dp-node dp-node-claude">
+          <div class="dp-node-icon">✦</div>
+          <div class="dp-node-name">Claude API</div>
+          <div class="dp-node-desc">Receives the data payload and writes a plain-English market summary with analysis</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dp-arrow">
+      <div class="dp-arrow-label">saves report to</div>
+      <div class="dp-arrow-shaft"></div>
+      <div class="dp-arrow-tip">▼</div>
+    </div>
+
+    <!-- ── 08. Reports Output ─────────────────────────────────────── -->
+    <div class="dp-stage dp-stage-output">
+      <div class="dp-stage-header">
+        <span class="dp-stage-num">08</span>
+        <span class="dp-stage-title">Reports</span>
+        <span class="dp-stage-where">reports/</span>
+      </div>
+      <div class="dp-stage-body">
+        <div class="dp-node dp-node-wide">
+          <div class="dp-node-icon">📋</div>
+          <div class="dp-node-name">market_report_2025-04.pdf</div>
+          <div class="dp-node-path">reports/</div>
+          <div class="dp-node-desc">Auto-generated PDF with price predictions, market trend charts, and a Claude-written narrative summary. Produced on a schedule — no human needs to trigger it.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="dp-legend">
+      <div class="dp-legend-item">
+        <div class="dp-legend-dot" style="background:#dbb84a;"></div>
+        <span>External source</span>
+      </div>
+      <div class="dp-legend-item">
+        <div class="dp-legend-dot" style="background:#a8bede;"></div>
+        <span>Agent / script</span>
+      </div>
+      <div class="dp-legend-item">
+        <div class="dp-legend-dot" style="background:#ccc;"></div>
+        <span>Raw storage</span>
+      </div>
+      <div class="dp-legend-item">
+        <div class="dp-legend-dot" style="background:#7dd9b0;"></div>
+        <span>Processed storage</span>
+      </div>
+      <div class="dp-legend-item">
+        <div class="dp-legend-dot" style="background:#c0b0e8;"></div>
+        <span>Transform / pipeline</span>
+      </div>
+      <div class="dp-legend-item">
+        <div class="dp-legend-dot" style="background:var(--accent2);"></div>
+        <span>Final output</span>
+      </div>
+    </div>
+
   </div>
 
 </section>
