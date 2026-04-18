@@ -455,6 +455,149 @@
     /* ── Divider ──────────────────────────────────────────────────── */
     hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
 
+    /* ── Workflow Diagram ─────────────────────────────────────────── */
+    .wf-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .wf-phase {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px 24px;
+    }
+    .wf-phase-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .wf-phase-num {
+      font-size: 0.63rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: var(--mono);
+    }
+    .wf-phase-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .wf-phase-nodes {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    .wf-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 16px 20px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: var(--surface2);
+      min-width: 138px;
+      text-align: center;
+      position: relative;
+    }
+    .wf-node.wf-done {
+      border-color: var(--green);
+      background: #f0faf5;
+    }
+    .wf-node.wf-current {
+      border-color: var(--accent);
+      background: #eef3fb;
+      box-shadow: 0 0 0 4px rgba(74,111,165,0.13);
+    }
+    .wf-node.wf-locked {
+      opacity: 0.45;
+    }
+    .wf-node-id {
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .wf-node-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .wf-node-pulse {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(74,111,165,0.25);
+      animation: pulse 2s infinite;
+    }
+    .wf-here-tag {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(74,111,165,0.1);
+      border: 1px solid rgba(74,111,165,0.2);
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-top: 2px;
+    }
+    .wf-h-arrow {
+      font-size: 1.3rem;
+      color: var(--border);
+      padding: 0 10px;
+      flex-shrink: 0;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+    .wf-connector {
+      display: flex;
+      align-items: center;
+      padding-left: 44px;
+      height: 30px;
+      color: var(--border);
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+    .wf-legend {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .wf-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+    .wf-legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 2px solid;
+      flex-shrink: 0;
+    }
+
     /* ── Current module callout ───────────────────────────────────── */
     .current-callout {
       display: flex;
@@ -496,6 +639,9 @@
 <!-- ── Tab Bar ────────────────────────────────────────────────────── -->
 <nav class="tab-bar" id="tabBar">
   <button class="tab-btn active" data-tab="overview">Overview</button>
+  <button class="tab-btn" data-tab="tree">Project Tree</button>
+  <button class="tab-btn" data-tab="glossary">Glossary</button>
+  <button class="tab-btn" data-tab="workflow">Workflow</button>
   <button class="tab-btn active-module-tab" data-tab="module1">Module 1 · Setup</button>
   <button class="tab-btn" data-tab="module2">Module 2 · Data &amp; Agent</button>
   <button class="tab-btn locked" data-tab="module3" title="Locked"><span class="lock-icon">🔒</span> Module 3 · pandas</button>
@@ -505,8 +651,6 @@
   <button class="tab-btn locked" data-tab="module7" title="Locked"><span class="lock-icon">🔒</span> Module 7 · ML</button>
   <button class="tab-btn locked" data-tab="module8" title="Locked"><span class="lock-icon">🔒</span> Module 8 · AI</button>
   <button class="tab-btn locked" data-tab="module9" title="Locked"><span class="lock-icon">🔒</span> Module 9 · Agents</button>
-  <button class="tab-btn" data-tab="tree">Project Tree</button>
-  <button class="tab-btn" data-tab="glossary">Glossary</button>
 </nav>
 
 <!-- ══════════════════════════════════════════════════════════════════
@@ -760,6 +904,145 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     TAB: WORKFLOW
+═══════════════════════════════════════════════════════════════════ -->
+<section class="tab-content" id="tab-workflow">
+
+  <p class="section-title">Workflow — Your Project Journey</p>
+
+  <div class="current-callout" style="margin-bottom:28px;">
+    <div class="pulse"></div>
+    <div class="current-callout-text">
+      <strong>You are here:</strong> Module 2 — Data &amp; First Agent &nbsp;·&nbsp; Step 1 — Finding &amp; Fetching Housing Data
+    </div>
+  </div>
+
+  <div class="wf-diagram">
+
+    <!-- Phase 1 -->
+    <div class="wf-phase">
+      <div class="wf-phase-header">
+        <span class="wf-phase-num">Phase 1</span>
+        <span class="wf-phase-title">Foundation</span>
+      </div>
+      <div class="wf-phase-nodes">
+        <div class="wf-node wf-done">
+          <div class="wf-node-id">M1</div>
+          <div class="wf-node-name">GitHub &amp; Setup</div>
+          <span class="badge badge-complete"><span class="badge-dot"></span> Complete</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wf-connector">↓</div>
+
+    <!-- Phase 2 -->
+    <div class="wf-phase">
+      <div class="wf-phase-header">
+        <span class="wf-phase-num">Phase 2</span>
+        <span class="wf-phase-title">Data Acquisition</span>
+      </div>
+      <div class="wf-phase-nodes">
+        <div class="wf-node wf-current">
+          <div class="wf-node-pulse"></div>
+          <div class="wf-node-id">M2</div>
+          <div class="wf-node-name">Data &amp; Agent</div>
+          <span class="badge badge-progress"><span class="badge-dot"></span> In Progress</span>
+          <div class="wf-here-tag">YOU ARE HERE</div>
+        </div>
+        <div class="wf-h-arrow">→</div>
+        <div class="wf-node wf-locked">
+          <div class="wf-node-id">M3</div>
+          <div class="wf-node-name">pandas</div>
+          <span class="badge badge-pending">Locked</span>
+        </div>
+        <div class="wf-h-arrow">→</div>
+        <div class="wf-node wf-locked">
+          <div class="wf-node-id">M4</div>
+          <div class="wf-node-name">Jupyter</div>
+          <span class="badge badge-pending">Locked</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wf-connector">↓</div>
+
+    <!-- Phase 3 -->
+    <div class="wf-phase">
+      <div class="wf-phase-header">
+        <span class="wf-phase-num">Phase 3</span>
+        <span class="wf-phase-title">Analysis &amp; Modeling</span>
+      </div>
+      <div class="wf-phase-nodes">
+        <div class="wf-node wf-locked">
+          <div class="wf-node-id">M5</div>
+          <div class="wf-node-name">Exploratory Analysis</div>
+          <span class="badge badge-pending">Locked</span>
+        </div>
+        <div class="wf-h-arrow">→</div>
+        <div class="wf-node wf-locked">
+          <div class="wf-node-id">M6</div>
+          <div class="wf-node-name">Data Pipeline</div>
+          <span class="badge badge-pending">Locked</span>
+        </div>
+        <div class="wf-h-arrow">→</div>
+        <div class="wf-node wf-locked">
+          <div class="wf-node-id">M7</div>
+          <div class="wf-node-name">Machine Learning</div>
+          <span class="badge badge-pending">Locked</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wf-connector">↓</div>
+
+    <!-- Phase 4 -->
+    <div class="wf-phase">
+      <div class="wf-phase-header">
+        <span class="wf-phase-num">Phase 4</span>
+        <span class="wf-phase-title">AI System</span>
+      </div>
+      <div class="wf-phase-nodes">
+        <div class="wf-node wf-locked">
+          <div class="wf-node-id">M8</div>
+          <div class="wf-node-name">AI Integration</div>
+          <span class="badge badge-pending">Locked</span>
+        </div>
+        <div class="wf-h-arrow">→</div>
+        <div class="wf-node wf-locked" style="border-style:dashed;border-color:rgba(124,92,191,0.4);opacity:0.5;">
+          <div class="wf-node-id" style="color:var(--accent2);">M9</div>
+          <div class="wf-node-name">Agentic Systems</div>
+          <span class="badge" style="background:rgba(124,92,191,0.1);color:var(--accent2);border:1px solid rgba(124,92,191,0.25);">Capstone</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Legend -->
+  <div class="wf-legend">
+    <div class="wf-legend-item">
+      <div class="wf-legend-swatch" style="background:#f0faf5;border-color:var(--green);"></div>
+      <span>Complete</span>
+    </div>
+    <div class="wf-legend-item">
+      <div class="wf-legend-swatch" style="background:#eef3fb;border-color:var(--accent);"></div>
+      <span>In Progress</span>
+    </div>
+    <div class="wf-legend-item">
+      <div class="wf-legend-swatch" style="background:var(--surface2);border-color:var(--border);opacity:0.45;"></div>
+      <span>Locked</span>
+    </div>
+    <div class="wf-legend-item">
+      <div class="wf-legend-swatch" style="background:rgba(124,92,191,0.05);border-color:rgba(124,92,191,0.4);border-style:dashed;opacity:0.6;"></div>
+      <span>Capstone</span>
     </div>
   </div>
 
