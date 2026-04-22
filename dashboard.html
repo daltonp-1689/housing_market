@@ -1546,16 +1546,391 @@
     <p class="section-title">Module 2 — Data &amp; First Agent</p>
     <p style="font-size:0.875rem;color:var(--text-dim);line-height:1.65;">
       Before any analysis can happen, you need real data — and a reliable way
-      to keep it fresh. This module covers finding housing data for El Dorado
-      Hills and Folsom, writing Python for the first time in this project, and
+      to keep it fresh. This module covers finding housing data for all of
+      California, writing Python for the first time in this project, and
       building your first scheduled agent that fetches new data automatically.
+      El Dorado Hills and Folsom are our focus markets, but training on all
+      ~1,800 California zip codes gives the ML model far more to learn from.
     </p>
   </div>
 
   <div class="current-callout">
     <div class="pulse"></div>
     <div class="current-callout-text">
-      <strong>Up next:</strong> Step 1 — Find a data source and write a Python script to download it
+      <strong>Active:</strong> Step 3 — Run the fetcher and verify the data landed correctly
+    </div>
+  </div>
+
+  <!-- ── Step 1 ─────────────────────────────────────────────────── -->
+  <div class="step-card open" id="step-2-1">
+    <div class="step-header" onclick="toggleStep(this)">
+      <div class="step-header-left">
+        <span class="step-num">Step 1</span>
+        <span class="step-title">Your Data Source — Zillow Research</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge badge-complete"><span class="badge-dot"></span> Complete</span>
+        <span class="chevron">▶</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-meta-grid">
+        <div class="meta-block">
+          <div class="meta-label">What We Found</div>
+          <div class="meta-value">
+            <strong>Zillow Research</strong> publishes free, public CSV datasets
+            updated monthly. The one we use is called <strong>ZHVI</strong> —
+            Zillow Home Value Index — filtered to single-family homes and condos
+            at the median tier. It contains one row per zip code and hundreds
+            of monthly columns going back to 2000.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Why It Matters</div>
+          <div class="meta-value">
+            Choosing a data source is a real data science decision. Zillow ZHVI
+            is a <em>smoothed, seasonally adjusted</em> index — not raw sale prices.
+            That means less noise but also a slight lag. For our goal (spotting
+            trends and predicting home values) it is exactly the right level of
+            signal.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">What I Learned</div>
+          <div class="meta-value">
+            <strong>ZHVI</strong> (Zillow Home Value Index) — a dollar estimate
+            of the median home value in an area, updated monthly. Unlike a single
+            sale price, it smooths over noise to show the true trend.
+            <strong>Seasonally adjusted</strong> means the index removes
+            predictable fluctuations (e.g., prices always dip in winter) so the
+            signal is cleaner.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Our Target Zip Codes</div>
+          <div class="meta-value" style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+            <span class="filepath">95762 — El Dorado Hills, CA</span>
+            <span class="filepath">95630 — Folsom, CA</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;">What the CSV Looks Like</div>
+      <div class="code-wrap">
+        <div class="code-wrap-header"><span>csv</span> <span>Zillow ZHVI — structure (simplified)</span></div>
+        <pre><span class="cmt"># Each row = one zip code. Each date column = that month's median home value.</span>
+RegionID, RegionName, RegionType, StateName, State, City, Metro, CountyName, 2000-01-31, 2000-02-29, ..., 2025-03-31
+<span class="str">91982,    95762,      zip,        California, CA,   El Dorado Hills, ..., 750000</span>
+<span class="str">91981,    95630,      zip,        California, CA,   Folsom,          ..., 645000</span></pre>
+      </div>
+
+      <div class="ml-banner">
+        <div class="ml-label">How This Connects to Machine Learning</div>
+        <p>
+          Before you can train any model, you need a <em>target variable</em> — the
+          thing you are trying to predict. ZHVI gives us exactly that: a clean,
+          monthly median home value per zip code. Later, in Module 7, you will
+          use the historical pattern in these columns to train a model that
+          forecasts future values. The data shape (one row per zip, one column
+          per month) will directly inform how you structure your feature matrix.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 2 ─────────────────────────────────────────────────── -->
+  <div class="step-card open" id="step-2-2">
+    <div class="step-header" onclick="toggleStep(this)">
+      <div class="step-header-left">
+        <span class="step-num">Step 2</span>
+        <span class="step-title">Write the Fetcher Script</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge badge-complete"><span class="badge-dot"></span> Complete</span>
+        <span class="chevron">▶</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-meta-grid">
+        <div class="meta-block">
+          <div class="meta-label">What Was Built</div>
+          <div class="meta-value">
+            <code style="font-family:var(--mono);font-size:0.85em;color:var(--accent)">src/agents/fetcher.py</code>
+            — a Python script that downloads the full Zillow ZHVI CSV,
+            filters it to just the El Dorado Hills and Folsom zip codes,
+            and saves the result to <code style="font-family:var(--mono);font-size:0.85em;color:var(--accent)">data/raw/</code>
+            with a date-stamped filename.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Why It Matters</div>
+          <div class="meta-value">
+            Instead of downloading files by hand every month, the script does it
+            for you — and saves the result with a timestamp so you always have a
+            clean historical archive. This is the foundation of every automated
+            data pipeline: reliable, repeatable, hands-free acquisition.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">What I Learned</div>
+          <div class="meta-value">
+            <strong>urllib.request</strong> — Python's built-in library for
+            making HTTP requests (downloading files from URLs). No install needed.
+            <strong>csv.DictReader</strong> — reads a CSV as a stream of
+            dictionaries, one per row. <strong>pathlib.Path</strong> — a modern
+            way to work with file paths that works on Mac, Windows, and Linux.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">File Created</div>
+          <div class="meta-value" style="margin-top:4px;">
+            <span class="filepath">📄 src/agents/fetcher.py</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;">The Fetcher — Core Logic</div>
+      <div class="code-wrap">
+        <div class="code-wrap-header"><span>python</span> <span>src/agents/fetcher.py</span></div>
+        <pre><span class="kw">import</span> csv, io, urllib.request
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+TARGET_ZIPS = {<span class="str">"95762"</span>, <span class="str">"95630"</span>}   <span class="cmt"># El Dorado Hills, Folsom</span>
+
+DATA_URL = (
+    <span class="str">"https://files.zillowstatic.com/research/public_csvs/zhvi/"</span>
+    <span class="str">"Zip_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv"</span>
+)
+
+<span class="kw">def</span> <span class="fn">fetch</span>():
+    <span class="cmt"># 1. Download the full Zillow CSV into memory</span>
+    <span class="kw">with</span> urllib.request.<span class="fn">urlopen</span>(DATA_URL) <span class="kw">as</span> resp:
+        text = resp.<span class="fn">read</span>().<span class="fn">decode</span>(<span class="str">"utf-8"</span>)
+
+    <span class="cmt"># 2. Parse it and keep only our two zip codes</span>
+    reader = csv.<span class="fn">DictReader</span>(io.<span class="fn">StringIO</span>(text))
+    rows = [r <span class="kw">for</span> r <span class="kw">in</span> reader <span class="kw">if</span> r[<span class="str">"RegionName"</span>] <span class="kw">in</span> TARGET_ZIPS]
+
+    <span class="cmt"># 3. Save with a date-stamped filename</span>
+    out = Path(<span class="str">"data/raw"</span>) / <span class="fn">f</span><span class="str">"zhvi_edh_folsom_{datetime.now():%Y%m%d}.csv"</span>
+    <span class="kw">with</span> <span class="fn">open</span>(out, <span class="str">"w"</span>) <span class="kw">as</span> f:
+        writer = csv.<span class="fn">DictWriter</span>(f, fieldnames=reader.fieldnames)
+        writer.<span class="fn">writeheader</span>()
+        writer.<span class="fn">writerows</span>(rows)
+
+    <span class="fn">print</span>(<span class="fn">f</span><span class="str">"Saved {len(rows)} rows → {out}"</span>)</pre>
+      </div>
+
+      <div class="ml-banner">
+        <div class="ml-label">How This Connects to Machine Learning</div>
+        <p>
+          The pattern here — <em>download → filter → save to a known location</em>
+          — is called an <strong>ETL step</strong> (Extract, Transform, Load).
+          Every ML pipeline starts with ETL. Right now our "transform" step is
+          minimal (just filtering rows). In Module 6 you will build the full
+          transformation — cleaning nulls, engineering features, normalizing
+          values — on top of this same raw file. Keeping raw data untouched in
+          <code style="font-family:var(--mono);font-size:0.9em">data/raw/</code>
+          means you can always re-run the pipeline from scratch.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 3 ─────────────────────────────────────────────────── -->
+  <div class="step-card open" id="step-2-3">
+    <div class="step-header" onclick="toggleStep(this)">
+      <div class="step-header-left">
+        <span class="step-num">Step 3</span>
+        <span class="step-title">Run It &amp; Verify the Data</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge badge-progress"><span class="badge-dot"></span> Active</span>
+        <span class="chevron">▶</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-meta-grid">
+        <div class="meta-block">
+          <div class="meta-label">What to Do</div>
+          <div class="meta-value">
+            Run the fetcher from your terminal. It will download the Zillow CSV,
+            filter to your two zip codes, and save a file to
+            <code style="font-family:var(--mono);font-size:0.85em;color:var(--accent)">data/raw/</code>.
+            Then run the inspect snippet to make sure the data looks right
+            before doing anything else with it.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Why It Matters</div>
+          <div class="meta-value">
+            Never trust data you haven't looked at. Real data has missing values,
+            wrong types, unexpected column names. Verifying immediately — before
+            building anything on top of it — saves hours of debugging later.
+            "Check your data first" is one of the most important habits in
+            data science.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">What to Look For</div>
+          <div class="meta-value">
+            Two rows (one per zip), hundreds of monthly columns, and dollar
+            values in the most recent column in the $500k–$900k range for
+            El Dorado Hills and Folsom. If you see zero rows, the zip code
+            filter may need adjustment.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Expected Output</div>
+          <div class="meta-value" style="font-family:var(--mono);font-size:0.8em;color:var(--text-dim);">
+            Saved 2 rows → data/raw/zhvi_edh_folsom_YYYYMMDD.csv<br>
+            Zip 95762 (El Dorado Hills) · latest ZHVI: $XXX,XXX<br>
+            Zip 95630 (Folsom) · latest ZHVI: $XXX,XXX
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;">Run the Fetcher</div>
+      <div class="code-wrap">
+        <div class="code-wrap-header"><span>bash</span> <span>Terminal — from project root</span></div>
+        <pre><span class="cmt"># Make sure your virtual environment is active first</span>
+<span class="fn">source</span> .venv/bin/activate
+
+<span class="cmt"># Run the fetcher once</span>
+<span class="fn">python</span> src/agents/fetcher.py</pre>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;margin-top:20px;">Inspect the Output</div>
+      <div class="code-wrap">
+        <div class="code-wrap-header"><span>python</span> <span>Quick verification — paste into a Python shell</span></div>
+        <pre><span class="kw">import</span> csv, glob
+
+<span class="cmt"># Find the file that was just saved</span>
+files = <span class="fn">sorted</span>(<span class="fn">glob.glob</span>(<span class="str">"data/raw/zhvi_edh_folsom_*.csv"</span>))
+<span class="fn">print</span>(<span class="str">"Files found:"</span>, files)
+
+<span class="kw">with</span> <span class="fn">open</span>(files[-1]) <span class="kw">as</span> f:
+    reader = csv.<span class="fn">DictReader</span>(f)
+    rows = <span class="fn">list</span>(reader)
+
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Rows: {len(rows)}"</span>)
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Columns: {len(rows[0])}"</span>)
+
+<span class="cmt"># Show the zip code, city, and most recent home value</span>
+last_col = <span class="fn">list</span>(rows[0].<span class="fn">keys</span>())[-1]
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Most recent date: {last_col}"</span>)
+<span class="kw">for</span> row <span class="kw">in</span> rows:
+    val = <span class="fn">float</span>(row[last_col])
+    <span class="fn">print</span>(<span class="fn">f</span><span class="str">"  {row['RegionName']} ({row['City']}): ${val:,.0f}"</span>)</pre>
+      </div>
+
+      <div class="ml-banner">
+        <div class="ml-label">How This Connects to Machine Learning</div>
+        <p>
+          In ML, <strong>data validation</strong> is a first-class concern —
+          not an afterthought. Production ML systems use automated checks
+          (called data quality tests or schema validation) to catch problems
+          before they corrupt a model. Tools like Great Expectations and
+          Pandera are built around exactly this idea. You are doing the manual
+          version now; in Module 6, you will formalize it into the pipeline.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 4 ─────────────────────────────────────────────────── -->
+  <div class="step-card open" id="step-2-4">
+    <div class="step-header" onclick="toggleStep(this)">
+      <div class="step-header-left">
+        <span class="step-num">Step 4</span>
+        <span class="step-title">Schedule It — Your First Agent</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge badge-pending"><span class="badge-dot"></span> Upcoming</span>
+        <span class="chevron">▶</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-meta-grid">
+        <div class="meta-block">
+          <div class="meta-label">What We Will Do</div>
+          <div class="meta-value">
+            The fetcher already has a <code style="font-family:var(--mono);font-size:0.85em;color:var(--accent)">--schedule</code>
+            flag built in. Running it with that flag starts an
+            <strong>APScheduler</strong> loop that calls <code style="font-family:var(--mono);font-size:0.85em;color:var(--accent)">fetch()</code>
+            every 24 hours automatically — no cron job, no cloud service
+            needed. The agent runs as long as the process is alive.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">Why It Matters</div>
+          <div class="meta-value">
+            This is the moment the script becomes an <em>agent</em>: code that
+            acts autonomously on a schedule, not just when you run it by hand.
+            The Fetcher agent is the first component of the multi-agent system
+            you will complete in Module 9. Every fresh CSV it saves is a
+            timestamped snapshot of the market — your historical archive.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">What I Will Learn</div>
+          <div class="meta-value">
+            <strong>APScheduler</strong> — a Python library that runs functions
+            on a schedule (interval, cron, one-time). A
+            <strong>BlockingScheduler</strong> keeps the process alive and runs
+            jobs in the foreground. The pattern of "run once immediately, then
+            on an interval" is standard in data agents so you always have
+            fresh data without waiting for the first interval to elapse.
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="meta-label">New Concept</div>
+          <div class="meta-value">
+            <strong>Agent</strong> — code that runs autonomously on a trigger
+            (a schedule, an event, or a call from another agent) rather than
+            waiting for a human to click run. The Fetcher is the simplest
+            possible agent: one job, one schedule, one output.
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;">Start the Scheduled Agent</div>
+      <div class="code-wrap">
+        <div class="code-wrap-header"><span>bash</span> <span>Terminal — run after Step 3 is verified</span></div>
+        <pre><span class="cmt"># Start the Fetcher agent on a 24-hour schedule</span>
+<span class="cmt"># It fetches once immediately, then again every 24 hours.</span>
+<span class="cmt"># Press Ctrl+C to stop.</span>
+<span class="fn">python</span> src/agents/fetcher.py --schedule</pre>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;margin-top:20px;">How APScheduler Works</div>
+      <div class="code-wrap">
+        <div class="code-wrap-header"><span>python</span> <span>src/agents/fetcher.py — scheduler section</span></div>
+        <pre><span class="kw">from</span> apscheduler.schedulers.blocking <span class="kw">import</span> BlockingScheduler
+
+<span class="kw">def</span> <span class="fn">start_scheduler</span>(interval_hours=24):
+    scheduler = <span class="fn">BlockingScheduler</span>()
+
+    <span class="cmt"># Register the fetch() function as a job</span>
+    scheduler.<span class="fn">add_job</span>(fetch, <span class="str">"interval"</span>, hours=interval_hours)
+
+    <span class="fn">fetch</span>()            <span class="cmt"># run once right now</span>
+    scheduler.<span class="fn">start</span>()  <span class="cmt"># then keep running on the interval</span></pre>
+      </div>
+
+      <div class="ml-banner">
+        <div class="ml-label">How This Connects to Machine Learning</div>
+        <p>
+          Production ML systems rely on scheduled agents to stay current.
+          A model trained on last year's data is less useful than one retrained
+          on data from yesterday. The Fetcher agent you are building here is the
+          first piece of that system: it ensures your training data is always
+          fresh. In Module 9, the Fetcher's output will automatically trigger
+          the Analyst agent, which will trigger the Reporter — a fully
+          autonomous loop from raw data to finished summary.
+        </p>
+      </div>
     </div>
   </div>
 
